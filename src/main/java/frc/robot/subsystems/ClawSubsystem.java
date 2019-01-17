@@ -59,6 +59,4 @@ public class ClawSubsystem extends Subsystem {
   public boolean isClawClose() {
     return !clawCloseLimitSwitch.isMagnetClose();
   }
-
-  public void 
 }
