@@ -1,4 +1,4 @@
-package org.usfirst.frc.team4173.robot.subsystems;
+package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
