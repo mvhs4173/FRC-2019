@@ -17,14 +17,25 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class ClawSubsystem extends Subsystem {
   private MotorController clawMotor;
+  private MotorController angleMotor;
+  private MotorController cimMotorOne;
+  private MotorController cimMotorTwo;
   private MagneticLimitSwitch clawOpenLimitSwitch;
   private MagneticLimitSwitch clawCloseLimitSwitch;
   private double clawSpeed = 1;
 
-  public ClawSubsystem(MotorController clawMotor, MagneticLimitSwitch clawOpenLimitSwitch, MagneticLimitSwitch clawCloseLimitSwitch) {
+  public ClawSubsystem(MotorController clawMotor,
+                       MotorController angleMotor,
+                       MotorController cimMotorOne,
+                       MotorController cimMotorTwo,
+                       MagneticLimitSwitch clawOpenLimitSwitch,
+                       MagneticLimitSwitch clawCloseLimitSwitch) {
     this.clawMotor = clawMotor;
     this.clawOpenLimitSwitch = clawOpenLimitSwitch;
     this.clawCloseLimitSwitch = clawCloseLimitSwitch;
+    this.angleMotor = angleMotor;
+    this.cimMotorOne = cimMotorOne;
+    this.cimMotorTwo = cimMotorTwo;
   }
 
   @Override
@@ -48,4 +59,6 @@ public class ClawSubsystem extends Subsystem {
   public boolean isClawClose() {
     return !clawCloseLimitSwitch.isMagnetClose();
   }
+
+  public void 
 }
