@@ -26,6 +26,10 @@ public class ClawSubsystem extends Subsystem {
   private MagneticLimitSwitch intakeOffLimitSwitch;
   private double clawSpeed = 1;
   private double origin = 0;
+  public enum ClawPosition {
+    CLAW_UP,
+    CLAW_DOWN
+  }
 
   public ClawSubsystem(MotorController clawMotor,
                        MotorController angleMotor,
@@ -59,14 +63,13 @@ public class ClawSubsystem extends Subsystem {
     clawMotor.setVelocityRPM(-clawSpeed);
   }
 
-  public void clawAngle() {
+  public void clawResetOrigin() {
     angleMotor.setPositionInTicks(origin);
   }
 
-
-
-
-
+  public int getAngleMotorPositionRaw() {
+    return angleMotor.getEncoderPosition();
+  }
   public void intakeOn() {
     cimMotorOne.setVelocityRPM(clawSpeed);
     cimMotorTwo.setVelocityRPM(clawSpeed);
