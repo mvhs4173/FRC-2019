@@ -195,10 +195,10 @@ public class MotorController {
 	
 	/**
 	 * Tells the motor to turn to the ticks specified
-	 * @param ticks The position in ticks to set the encoder to
+	 * @param origin2 The position in ticks to set the encoder to
 	 */
-	public void setPositionInTicks(int ticks) {
-			controller.set(ControlMode.Position, ticks);
+	public void setPositionInTicks(double origin2) {
+			controller.set(ControlMode.Position, origin2);
 	}
 	
 	/**

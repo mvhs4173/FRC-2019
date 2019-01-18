@@ -22,20 +22,27 @@ public class ClawSubsystem extends Subsystem {
   private MotorController cimMotorTwo;
   private MagneticLimitSwitch clawOpenLimitSwitch;
   private MagneticLimitSwitch clawCloseLimitSwitch;
+  private MagneticLimitSwitch intakeOnLimitSwitch;
+  private MagneticLimitSwitch intakeOffLimitSwitch;
   private double clawSpeed = 1;
+  private double origin = 0;
 
   public ClawSubsystem(MotorController clawMotor,
                        MotorController angleMotor,
                        MotorController cimMotorOne,
                        MotorController cimMotorTwo,
                        MagneticLimitSwitch clawOpenLimitSwitch,
-                       MagneticLimitSwitch clawCloseLimitSwitch) {
+                       MagneticLimitSwitch clawCloseLimitSwitch,
+                       MagneticLimitSwitch intakeOnLimitSwitch,
+                       MagneticLimitSwitch intakeOffLimitSwitch) {
     this.clawMotor = clawMotor;
-    this.clawOpenLimitSwitch = clawOpenLimitSwitch;
-    this.clawCloseLimitSwitch = clawCloseLimitSwitch;
     this.angleMotor = angleMotor;
     this.cimMotorOne = cimMotorOne;
     this.cimMotorTwo = cimMotorTwo;
+    this.clawOpenLimitSwitch = clawOpenLimitSwitch;
+    this.clawCloseLimitSwitch = clawCloseLimitSwitch;
+    this.intakeOnLimitSwitch = intakeOnLimitSwitch;
+    this.intakeOffLimitSwitch = intakeOffLimitSwitch;
   }
 
   @Override
@@ -52,11 +59,41 @@ public class ClawSubsystem extends Subsystem {
     clawMotor.setVelocityRPM(-clawSpeed);
   }
 
+  public void clawAngle() {
+    angleMotor.setPositionInTicks(origin);
+  }
+
+
+
+
+
+  public void intakeOn() {
+    cimMotorOne.setVelocityRPM(clawSpeed);
+    cimMotorTwo.setVelocityRPM(clawSpeed);
+  }
+
+  public void intakeOff() {
+    cimMotorOne.setVelocityRPM(0);
+    cimMotorTwo.setVelocityRPM(0);
+  }
+
   public boolean isClawOpen() {
     return clawOpenLimitSwitch.isMagnetClose();
   }
 
   public boolean isClawClose() {
     return !clawCloseLimitSwitch.isMagnetClose();
+  }
+
+
+
+
+
+  public boolean isIntakeOn() {
+    return intakeOnLimitSwitch.isMagnetClose();
+  }
+
+  public boolean isIntakeOff() {
+    return intakeOffLimitSwitch.isMagnetClose();
   }
 }
