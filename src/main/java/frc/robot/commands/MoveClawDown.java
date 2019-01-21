@@ -18,7 +18,7 @@ import frc.robot.subsystems.ClawSubsystem;
   private boolean finished = false;
   private ClawSubsystem clawSubsystem;
   // Positive position of the claw
-  private int clawPositivePosition = 10;
+  private int clawNegativePosition = 10;
 
   public MoveClawDown(ClawSubsystem clawSubsystem) {
     // Use requires() here to declare subsystem dependencies
