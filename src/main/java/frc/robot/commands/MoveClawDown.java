@@ -19,6 +19,8 @@ import frc.robot.subsystems.ClawSubsystem;
   private ClawSubsystem clawSubsystem;
   // Positive position of the claw
   private int clawNegativePosition = 10;
+  private int clawEncoderPosition;
+  private int clawTargetPosition;
 
   public MoveClawDown(ClawSubsystem clawSubsystem) {
     // Use requires() here to declare subsystem dependencies
@@ -34,14 +36,15 @@ import frc.robot.subsystems.ClawSubsystem;
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    int clawEncoderPosition = clawSubsystem.getAngleMotorPositionRaw();
+    clawEncoderPosition = clawSubsystem.getAngleMotorPositionRaw();
     clawSubsystem.clawOpen();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return finished;
+    boolean temp = clawEncoderPosition == clawTargetPosition;
+    return temp;
   }
 
   // Called once after isFinished returns true
