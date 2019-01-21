@@ -14,15 +14,13 @@ import frc.robot.subsystems.ClawSubsystem;
 /**
  * An example command.  You can replace me with your own command.
  */
- public class MoveClawUp extends Command {
+ public class MoveClawDown extends Command {
   private boolean finished = false;
   private ClawSubsystem clawSubsystem;
   // Positive position of the claw
   private int clawPositivePosition = 10;
-  private int clawEncoderPosition;
-  private int clawTargetPosition;
 
-  public MoveClawUp(ClawSubsystem clawSubsystem) {
+  public MoveClawDown(ClawSubsystem clawSubsystem) {
     // Use requires() here to declare subsystem dependencies
     requires(clawSubsystem);
     this.clawSubsystem = clawSubsystem;
@@ -36,15 +34,14 @@ import frc.robot.subsystems.ClawSubsystem;
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    clawEncoderPosition = clawSubsystem.getAngleMotorPositionRaw();
+    int clawEncoderPosition = clawSubsystem.getAngleMotorPositionRaw();
     clawSubsystem.clawOpen();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    boolean temp = clawEncoderPosition == clawTargetPosition;
-    return temp;
+    return finished;
   }
 
   // Called once after isFinished returns true
