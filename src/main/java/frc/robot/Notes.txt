@@ -1,8 +1,0 @@
--------------To upload code press Shift+F5-----------
-
-
-Grabing mekanism
-    2 mini cims bot directions full power
-    1 motor both directions percision
-    proxcimity sensor
-    1 percision motor for angling
