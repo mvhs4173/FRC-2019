@@ -242,8 +242,12 @@ public class MotorController {
 	 * Turn on or off the brakes
 	 * @param brake Brake or Coast
 	 */
-	public void setBrake(NeutralMode brake){
-		controller.setNeutralMode(brake);
+	public void setBrakeMode(boolean brake){
+		if (brake) {
+			controller.setNeutralMode(NeutralMode.Brake);
+		}else {
+			controller.setNeutralMode(NeutralMode.Coast);
+		}
 	}
 	
 	public double getAmps() {
