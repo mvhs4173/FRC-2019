@@ -1,5 +1,5 @@
-Grabbing mechanism
-    2 mini cims both directions full power
-    1 precision motor both directions
+Grabing mekanism
+    2 mini cims bot directions full power
+    1 motor both directions percision
     proxcimity sensor
-    1 precision motor for angling
+    1 percision motor for angling
