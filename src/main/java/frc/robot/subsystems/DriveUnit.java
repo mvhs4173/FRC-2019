@@ -1,13 +1,16 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.*;
+import frc.robot.Robot;
 import edu.wpi.first.wpilibj.Preferences;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 //Forward for the drive motors is the front of the robot
 
 /**
- *
+ * A drive unit is two motors with one motor controller following the other one.
+ * They are attatched to one gearbox.
+ * There is a right and a left drive unit.
  */
 public class DriveUnit {
     
@@ -36,17 +39,17 @@ public class DriveUnit {
 	 * @param side Indicates which side of the robot the two drive motors control
 	 */
 	public DriveUnit(MotorController frontCAN, MotorController rearCAN, UnitSide side) {
-		frontMotor = frontCAN;
+    frontMotor = frontCAN;
+    rearMotor = rearCAN;
 		//If a valid can id has been provided for the rear motor controller
 		if (rearCAN != null) {
-			rearMotor = rearCAN;
+	
 			//Tells the rear motor to do whatever the front motor does
 			rearMotor.setFollower(frontMotor);
-			rearMotor.setBrake(NeutralMode.Brake);
+			
 		}
+		setBrakeMode(true);
 		
-		//Tell the motors to brake if there is no voltage being applied to them
-		frontMotor.setBrake(NeutralMode.Brake);
 		configPID(0.001, 0, 0.1, 1);
 		
 		unitSide = side;
@@ -342,8 +345,11 @@ public class DriveUnit {
 	 * Turn on or off the brakes
 	 * @param brake Brake or Coast
 	 */
-	public void setBrake(NeutralMode brake){
-		frontMotor.setBrake(brake);
+	public void setBrakeMode(Boolean brake){
+    frontMotor.setBrakeMode(brake);
+    if (rearMotor != null) {
+      rearMotor.setBrakeMode(brake);
+    }
 	}
 }
 
