@@ -1,3 +1,6 @@
+-------------To upload code press Shift+F5-----------
+
+
 Grabing mekanism
     2 mini cims bot directions full power
     1 motor both directions percision

@@ -21,7 +21,7 @@ public class DriveUnit {
 	private final double ticksPerShaftRotation = 4096.0;
 	
 	private final double rpmToClicksPer100ms =  ticksPerShaftRotation/1.0 * 1.0/60.0 * 1.0/10.0;// rev/min = 4096 clicks/rev * 1min/60s * 1s/10 centi seconds
-	private final double actualOverRequestedRPM =  0.85589;
+	//private final double actualOverRequestedRPM =  0.85589;
 	Preferences prefs;
 	
 	public enum UnitSide {
