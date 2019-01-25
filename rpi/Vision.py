@@ -201,6 +201,10 @@ class VisionTarget:
                 return True;
 
         return False;#If the above conditions are false then the target is not centered
+    
+    #Returns 1 if Cargo returns 2 if Reflective tape
+    def getVisionTargetType(self):
+        return 2;
 
 
 
@@ -438,8 +442,10 @@ while True:
     if connected:
         _, frame = cap.read()
         visionTarget = vision.findNearestVisionTarget(frame)
+        targetTypeNumber = 0#A number that indicates what type the target is, If 0 then there is no target, If 1 then its cargo, If 2 then its reflective tape
 
         if visionTarget:
+            targetTypeNumber = visionTarget.getVisionTargetType()
             boxCoordinates = visionTarget.getBoundingBox()
 
             font = cv2.FONT_HERSHEY_SIMPLEX
@@ -456,6 +462,9 @@ while True:
         nTable.putNumber("TargetPosition", visionTarget.getPosition())#Puts a python list holding the X and Y coordinate of the center of the VisionTarget
         nTable.putNumber("HorizontalOffset", visionTarget.getCameraHorizontalOffset())
         nTable.putNumber("TargetSize", visionTarget.getSize())
+        nTable.putNumber("TargetType", targetTypeNumber)
+        
+        
 
         
         cv2.imshow("frame", frame)

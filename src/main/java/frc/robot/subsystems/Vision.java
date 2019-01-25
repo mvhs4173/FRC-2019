@@ -14,7 +14,8 @@ public class Vision {
      */
     public enum VisionTargetType {
         CARGO,
-        REFLECTIVE_TAPE;
+        REFLECTIVE_TAPE,
+        NONE;
     }
 
     private NetworkTableInstance networkTables;//Network tables service
@@ -22,11 +23,13 @@ public class Vision {
     private NetworkTableEntry visionTargetPosition;
     private NetworkTableEntry visionTargetSize;
     private NetworkTableEntry visionTargetHorizontalOffset;
+    private NetworkTableEntry visionTargetType;
 
     //Keys for data in the Network Tables
     private String targetPositionKey = "TargetPosition";
     private String targetSizeKey = "TargetSize";
     private String targetHorizontalOffsetKey = "HorizontalOffset";
+    private String targetTypeKey = "TargetType";
 
     Number[] defaultVector = {-1, -1};
 
@@ -41,6 +44,7 @@ public class Vision {
         visionTargetPosition = visionTable.getEntry(targetPositionKey);
         visionTargetSize = visionTable.getEntry(targetSizeKey);
         visionTargetHorizontalOffset = visionTable.getEntry(targetHorizontalOffsetKey);
+        visionTargetType = visionTable.getEntry(targetTypeKey);
     }
 
     /**
@@ -67,9 +71,33 @@ public class Vision {
 
     /**
      * Get the horizontal offset of the camera to the vision target
-     * @return An integer representing the offset
+     * @return An integer representing the horizontal offset
      */
     public int getVisionTargetHorizontalOffset() {
         return (int)visionTargetHorizontalOffset.getNumber(0);
+    }
+
+    /**
+     * Get the type of the target that the camera sees
+     * @return Returns an Enum indicating which type
+     */
+    public VisionTargetType getTargetType() {
+        int targetTypeNumber = (int)visionTargetType.getNumber(0);
+        VisionTargetType targetType = VisionTargetType.NONE;
+
+        //Determine the target type
+        switch(targetTypeNumber) {
+            case 0:
+                targetType = VisionTargetType.NONE;
+                break;
+            case 1:
+                targetType = VisionTargetType.CARGO;
+                break;
+            case 2:
+                targetType = VisionTargetType.REFLECTIVE_TAPE;
+                break;
+        }
+
+        return targetType;
     }
 }
