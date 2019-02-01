@@ -9,22 +9,27 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.*;
-
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
  */
-public class ClawSubsystem extends Subsystem {
-  private MotorController clawMotor;
+public class CollectorSubsystem extends Subsystem {
+  private MotorController collectorMotor;
   private MagneticLimitSwitch clawOpenLimitSwitch;
   private MagneticLimitSwitch clawCloseLimitSwitch;
   private double clawSpeed = 1;
-
-  public ClawSubsystem(MotorController clawMotor, MagneticLimitSwitch clawOpenLimitSwitch, MagneticLimitSwitch clawCloseLimitSwitch) {
-    this.clawMotor = clawMotor;
+  private DigitalInput stopIntakeSystem;
+  private DigitalInput moveCollectorDown;
+  private DigitalInput moveCollectorUp;
+  public CollectorSubsystem(MotorController clawMotor, MagneticLimitSwitch clawOpenLimitSwitch, MagneticLimitSwitch clawCloseLimitSwitch) {
+    this.collectorMotor = clawMotor;
     this.clawOpenLimitSwitch = clawOpenLimitSwitch;
     this.clawCloseLimitSwitch = clawCloseLimitSwitch;
+    this.moveCollectorDown = new DigitalInput(RobotMap.collectorDown);
+    this.moveCollectorUp = new DigitalInput (RobotMap.collectorUp);
+    this.stopIntakeSystem = new DigitalInput(RobotMap.stopIntake);
   }
 
   @Override
@@ -34,11 +39,11 @@ public class ClawSubsystem extends Subsystem {
   }
 
   public void clawOpen() {
-    clawMotor.setVelocityRPM(clawSpeed);
+    collectorMotor.setVelocityRPM(clawSpeed);
   }
 
   public void clawClose() {
-    clawMotor.setVelocityRPM(-clawSpeed);
+    collectorMotor.setVelocityRPM(-clawSpeed);
   }
 
   public boolean isClawOpen() {

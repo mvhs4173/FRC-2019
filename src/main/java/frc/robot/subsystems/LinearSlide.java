@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -16,9 +17,28 @@ public class LinearSlide extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
+  private MotorController motorController; 
+
+  public LinearSlide(int MotorID){
+    this.motorController = new MotorController(MotorID);
+  }
+
+public int getPosition() {
+  return motorController.getEncoderPosition(); 
+}
+
+public void moveSlideUp() {
+  motorController.setVelocityRPM(50);
+}
+
+public void moveSlideDown() {
+  motorController.setVelocityRPM(-50);
+}
+
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
+  
   }
 }

@@ -24,12 +24,25 @@ public class MotorController {
 		controller = new TalonSRX(controllerId);
 		
 		//Tell the motors to brake if there is no voltage being applied to them
-		controller.setNeutralMode(NeutralMode.Brake);
-		configPID(0.01, 0.0, 0.1, 1);
+		setBrakeMode(true);	configPID(0.01, 0.0, 0.1, 1);
 		//Set the thing that we use as an encoder
 		ticksPerShaftRotation = 4096;
 	}
 	
+	/***
+	 * 
+	 * @param brake if true set brake mode on. if false set coast mode on.
+	 * control is what happens when power is removed from the motor.
+	 */
+	
+	public void setBrakeMode (Boolean brake) {
+		if (brake) {
+			controller.setNeutralMode(NeutralMode.Brake);
+		}
+		else{
+			controller.setNeutralMode(NeutralMode.Coast);
+		}
+	}
 	
 	public void enableForwardLimitSwitch() {
 		//Tell the controller where the limit switch is plugged in
@@ -238,13 +251,6 @@ public class MotorController {
 		origin = controller.getSelectedSensorPosition(0);
 	}
 	
-	/**
-	 * Turn on or off the brakes
-	 * @param brake Brake or Coast
-	 */
-	public void setBrake(NeutralMode brake){
-		controller.setNeutralMode(brake);
-	}
 	
 	public double getAmps() {
 		return controller.getOutputCurrent();
