@@ -1,6 +1,24 @@
 import cv2
 import numpy as np
 import math
+from networktables import NetworkTables #A library we can use for communicating with driver station
+
+
+
+condition = threading.condition()
+connected = False
+nTable = None
+
+#Listens for a connection from server
+def connectionListener():
+    global nTable
+    with condition:
+        connected = True
+        nTable = NetworkTables.getTable("SmartDashboard")#Set the table that we will be writing values to
+        condition.notify()
+
+NetworkTables.initialize(server="10.41.73.2")#Initialize the connection to the driver station
+NetworkTables.addConnectionListener(connectionListener, immediateNotify=True)
 
 #Camera resolution
 cameraWidth = 640
@@ -21,8 +39,7 @@ def distanceBetweenPoints(p1, p2):
 #Index 1: Top Right Point
 #Index 2: Bottom Left Point
 #Index 3: Bottom Right Point
-def order_points(pts):
-    centerPosition = getCenterPositionOfPoints(pts)
+;    centerPosition = getCenterPositionOfPoints(pts)
     topLeft = centerPosition
     topRight = centerPosition
     bottomLeft = centerPosition
@@ -146,6 +163,19 @@ class VisionTarget:
         x, y, w, h = self.getRightBoundingBox()
         return w*h
 
+    #Gets the total size of the vision target bounding box
+    #Returns as a list containing X and Y values for size
+    def getSize(self):
+        x, y, w, h = self.getLeftBoundingBox()
+        x2, y2, w2, h2 = self.getRightBoundingBox()
+
+        leftX = min(x, x2)
+        leftY = min(y, y2)
+
+        rightx = max(x + w, x2 + w2)
+        righty = max(y+h, y+h2)
+
+        return [abs(rightx - leftX), abs(righty - lefty)]
     #Returns how many pixels to the left or right the robot is offset from the Vision Target
     #If the number is closer to zero then the camera is closer to facing the Target straight on
     def getCameraHorizontalOffset(self):
@@ -171,6 +201,10 @@ class VisionTarget:
                 return True;
 
         return False;#If the above conditions are false then the target is not centered
+    
+    #Returns 1 if Cargo returns 2 if Reflective tape
+    def getVisionTargetType(self):
+        return 2;
 
 
 
@@ -404,30 +438,40 @@ class Vision:
 vision = Vision()#Init vision processing object
  
 while True:
-    _, frame = cap.read()
+    #Make sure a connection is established
+    if connected:
+        _, frame = cap.read()
+        visionTarget = vision.findNearestVisionTarget(frame)
+        targetTypeNumber = 0#A number that indicates what type the target is, If 0 then there is no target, If 1 then its cargo, If 2 then its reflective tape
 
-    visionTarget = vision.findNearestVisionTarget(frame)
+        if visionTarget:
+            targetTypeNumber = visionTarget.getVisionTargetType()
+            boxCoordinates = visionTarget.getBoundingBox()
 
-    if visionTarget:
-        boxCoordinates = visionTarget.getBoundingBox()
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            
+            #Detect if the robot is aligned with the VisionTarget
+            if visionTarget.isAlignedWithCamera():
+                cv2.rectangle(frame, (boxCoordinates[0][0], boxCoordinates[0][1]), (boxCoordinates[1][0], boxCoordinates[1][1]), (0, 255, 0), 2)
+                
+                cv2.putText(frame,'Field Target - Aligned',(boxCoordinates[0][0], boxCoordinates[0][1] - 30), font, 0.8,(255,255,255),2,cv2.LINE_AA)
+            else:
+                cv2.rectangle(frame, (boxCoordinates[0][0], boxCoordinates[0][1]), (boxCoordinates[1][0], boxCoordinates[1][1]), (0, 0, 255), 2)
+                cv2.putText(frame,'Field Target - Unaligned',(boxCoordinates[0][0], boxCoordinates[0][1] - 30), font, 0.8,(255,255,255),2,cv2.LINE_AA)
 
-        font = cv2.FONT_HERSHEY_SIMPLEX
+        nTable.putNumber("TargetPosition", visionTarget.getPosition())#Puts a python list holding the X and Y coordinate of the center of the VisionTarget
+        nTable.putNumber("HorizontalOffset", visionTarget.getCameraHorizontalOffset())
+        nTable.putNumber("TargetSize", visionTarget.getSize())
+        nTable.putNumber("TargetType", targetTypeNumber)
         
-        #Detect if the robot is aligned with the VisionTarget
-        if visionTarget.isAlignedWithCamera():
-            cv2.rectangle(frame, (boxCoordinates[0][0], boxCoordinates[0][1]), (boxCoordinates[1][0], boxCoordinates[1][1]), (0, 255, 0), 2)
-            
-            cv2.putText(frame,'Field Target - Aligned',(boxCoordinates[0][0], boxCoordinates[0][1] - 30), font, 0.8,(255,255,255),2,cv2.LINE_AA)
-        else:
-            cv2.rectangle(frame, (boxCoordinates[0][0], boxCoordinates[0][1]), (boxCoordinates[1][0], boxCoordinates[1][1]), (0, 0, 255), 2)
-            cv2.putText(frame,'Field Target - Unaligned',(boxCoordinates[0][0], boxCoordinates[0][1] - 30), font, 0.8,(255,255,255),2,cv2.LINE_AA)
-            
+        
+
+        
+        cv2.imshow("frame", frame)
     
-    cv2.imshow("frame", frame)
- 
-    key = cv2.waitKey(1)
-    if key == 27:
-        break
+        key = cv2.waitKey(1)
+        if key == 27:
+            break
  
 cap.release()
 cv2.destroyAllWindows()
