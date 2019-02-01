@@ -346,10 +346,10 @@ public class DriveUnit {
 	 * @param brake Brake or Coast
 	 */
 	public void setBrakeMode(Boolean brake){
-    frontMotor.setBrakeMode(brake);
-    if (rearMotor != null) {
-      rearMotor.setBrakeMode(brake);
-    }
+		frontMotor.setBrakeMode(brake);
+		if (rearMotor != null) {
+		rearMotor.setBrakeMode(brake);
+		}
 	}
 }
 
