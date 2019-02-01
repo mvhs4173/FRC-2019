@@ -8,11 +8,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.subsystems.LinearSlide;
+import frc.robot.Hardware;
 
 public class MoveLinearSlideUp extends Command {
+  private LinearSlide linearSlide;
+  boolean isFinished = false;
+
   public MoveLinearSlideUp() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    this.linearSlide = Hardware.linearSlide;
+    requires(Hardware.linearSlide);
   }
 
   // Called just before this Command runs the first time
@@ -23,12 +30,25 @@ public class MoveLinearSlideUp extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    linearSlide.moveSlideUp();
+      if (Hardware.stopLinearSlideUp.get() == true) {
+        linearSlide.stopSlideMovement();
+        isFinished = true;
+      }
+      else {
+        linearSlide.moveSlideUp();
+      }
+
+      
+     {
+
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return isFinished;
   }
 
   // Called once after isFinished returns true

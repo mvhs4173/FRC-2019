@@ -26,6 +26,12 @@ public class RobotMap {
                     collectorDown = 1,
                     collectorUp = 2;
 
+  public static int linearSlideMotor = 5;
+
+  public static int linearSlideMovement = 1,
+                    stopLinearSlideUp=1,
+                    stopLinearSlideDown=2;
+
   // If you are using multiple modules, make sure to define both the port
   // number and the module. For example you with a rangefinder:
   // public static int rangefinderPort = 1;

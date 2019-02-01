@@ -35,6 +35,10 @@ public void moveSlideDown() {
   motorController.setVelocityRPM(-50);
 }
 
+public void stopSlideMovement(){
+  motorController.setVelocityRPM(0);
+}
+
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.

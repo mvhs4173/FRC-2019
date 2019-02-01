@@ -19,7 +19,9 @@ public class Hardware {
 
     public static DigitalInput stopIntakeSystem,
                         stopMovingUp,
-                        stopMovingDown;
+                        stopMovingDown,
+                        stopLinearSlideUp,
+                        stopLinearSlideDown;
 
     public static DriveTrain driveTrain;
 
@@ -30,6 +32,10 @@ public class Hardware {
         this.stopIntakeSystem = new DigitalInput(RobotMap.stopIntake);
         this.stopMovingDown = new DigitalInput(RobotMap.collectorDown);
         this.stopMovingUp = new DigitalInput (RobotMap.collectorUp);
+        this.stopLinearSlideUp = new DigitalInput(RobotMap.stopLinearSlideDown);
+        this.stopLinearSlideDown = new DigitalInput(RobotMap.stopLinearSlideUp);
+
+
         //Init drivetrain motors
         this.frontLeftDriveMotor = new MotorController(RobotMap.frontLeftMotor);
         this.backLeftDriveMotor = new MotorController(RobotMap.backLeftMotor);
