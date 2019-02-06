@@ -251,17 +251,6 @@ public class MotorController {
 		origin = controller.getSelectedSensorPosition(0);
 	}
 	
-	/**
-	 * Turn on or off the brakes
-	 * @param brake Brake or Coast
-	 */
-	public void setBrakeMode(boolean brake){
-		if (brake) {
-			controller.setNeutralMode(NeutralMode.Brake);
-		}else {
-			controller.setNeutralMode(NeutralMode.Coast);
-		}
-	}
 	
 	public double getAmps() {
 		return controller.getOutputCurrent();
