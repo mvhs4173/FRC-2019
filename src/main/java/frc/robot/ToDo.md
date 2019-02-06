@@ -1,9 +1,5 @@
-To do list for next two weeks
-
 <h1>Autonomous</h1>
     **Auto-Assist Command**
-        *A command that can be overidden manually that will assist the driver in placing hatches or depositing cargo
-
         **Requirments**
             *Color sensor on bottom of robot to detect white line
             *Distance sensor on front of robot to detect distance to target
