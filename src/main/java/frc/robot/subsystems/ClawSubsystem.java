@@ -66,7 +66,7 @@ public class ClawSubsystem extends Subsystem {
   }
 
   public void clawResetOrigin() {
-    angleMotor.setPositionInTicks(origin);
+    angleMotor.setPositionInTicks((int)origin);
   }
 
   public void clawOpen() {
