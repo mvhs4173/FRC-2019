@@ -27,7 +27,9 @@ public class ClawSubsystem extends Subsystem {
 
   public enum ClawPosition {
     CLAW_UP,
-    CLAW_DOWN
+    CLAW_DOWN,
+    IN_BETWEEN,
+    INVALID;
   }
 
   public ClawSubsystem() {
@@ -74,24 +76,19 @@ public class ClawSubsystem extends Subsystem {
     angleMotor.setPercentSpeed(0.0);
   }
 
-  /**
-   * Detects if the claw is in the up position
-   */
-  public boolean isClawUp() {
-    return clawUpLimit.isTriggered();
-  }
+  public ClawPosition getClawPosition() {
+    ClawPosition position = ClawPosition.IN_BETWEEN;
 
-  /**
-   * Detects if the claw is in the down position
-   */
-  public boolean isClawDown() {
-    return clawDownLimit.isTriggered();
-  }
+    if (this.clawUpLimit.isTriggered()) {
+      position = ClawPosition.CLAW_UP;
+    }else if(this.clawDownLimit.isTriggered()) {
+      position = ClawPosition.CLAW_DOWN;
+    }else if(!this.clawDownLimit.isTriggered() && !this.clawDownLimit.isTriggered()){
+      position = ClawPosition.IN_BETWEEN;
+    }else {
+      position = ClawPosition.INVALID;
+    }
 
-  /**
-   * Detects if the claw is in neither the up or down position
-   */
-  public boolean isClawInBetween() {
-    return !clawUpLimit.isTriggered() && !clawDownLimit.isTriggered();
+    return position;
   }
 }
