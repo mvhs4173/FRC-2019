@@ -29,25 +29,25 @@ public class Hardware {
     //Init all the hardware
     public Hardware() {
         //Init limit switches
-        this.stopIntakeSystem = new DigitalInput(RobotMap.stopIntake);
-        this.stopMovingDown = new DigitalInput(RobotMap.collectorDown);
-        this.stopMovingUp = new DigitalInput (RobotMap.collectorUp);
-        this.stopLinearSlideUp = new DigitalInput(RobotMap.stopLinearSlideDown);
-        this.stopLinearSlideDown = new DigitalInput(RobotMap.stopLinearSlideUp);
+        stopIntakeSystem = new DigitalInput(RobotMap.stopIntake);
+        stopMovingDown = new DigitalInput(RobotMap.collectorDown);
+        stopMovingUp = new DigitalInput (RobotMap.collectorUp);
+        stopLinearSlideUp = new DigitalInput(RobotMap.stopLinearSlideDown);
+        stopLinearSlideDown = new DigitalInput(RobotMap.stopLinearSlideUp);
 
 
         //Init drivetrain motors
-        this.frontLeftDriveMotor = new MotorController(RobotMap.frontLeftMotor);
-        this.backLeftDriveMotor = new MotorController(RobotMap.backLeftMotor);
-        this.frontRightDriveMotor = new MotorController(RobotMap.frontRightMotor);
-        this.backLeftDriveMotor = new MotorController(RobotMap.backLeftMotor);
+        frontLeftDriveMotor = new MotorController(RobotMap.frontLeftMotor);
+        backLeftDriveMotor = new MotorController(RobotMap.backLeftMotor);
+        frontRightDriveMotor = new MotorController(RobotMap.frontRightMotor);
+        backLeftDriveMotor = new MotorController(RobotMap.backLeftMotor);
         
         //Init drive unit objects
-        this.leftDriveUnit = new DriveUnit(frontLeftDriveMotor, backLeftDriveMotor, UnitSide.LEFT);
-        this.rightDriveUnit = new DriveUnit(frontRightDriveMotor, backRightDriveMotor, UnitSide.RIGHT);
-        this.driveTrain = new DriveTrain(rightDriveUnit, leftDriveUnit);
+        leftDriveUnit = new DriveUnit(frontLeftDriveMotor, backLeftDriveMotor, UnitSide.LEFT);
+        rightDriveUnit = new DriveUnit(frontRightDriveMotor, backRightDriveMotor, UnitSide.RIGHT);
+        driveTrain = new DriveTrain(rightDriveUnit, leftDriveUnit);
 
         //Init subsystems
-        this.linearSlide = new LinearSlide(RobotMap.linearSlideMotor);
+        linearSlide = new LinearSlide(RobotMap.linearSlideMotor);
     }
 }
