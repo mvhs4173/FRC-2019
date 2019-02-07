@@ -39,14 +39,12 @@ public class DriveUnit {
 	 * @param side Indicates which side of the robot the two drive motors control
 	 */
 	public DriveUnit(MotorController frontCAN, MotorController rearCAN, UnitSide side) {
-    frontMotor = frontCAN;
-    rearMotor = rearCAN;
+    	frontMotor = frontCAN;
+    	rearMotor = rearCAN;
 		//If a valid can id has been provided for the rear motor controller
 		if (rearCAN != null) {
-	
 			//Tells the rear motor to do whatever the front motor does
 			rearMotor.setFollower(frontMotor);
-			
 		}
 		setBrakeMode(true);
 		

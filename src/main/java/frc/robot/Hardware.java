@@ -19,7 +19,9 @@ public class Hardware {
                                 clawGripMotor,
                                 clawAngleMotor,
                                 clawLeftIntake,
-                                clawRightIntake;
+                                clawRightIntake,
+                                linearSlideLeftLift,
+                                linearSlideRightLift;
 
     public static DriveUnit leftDriveUnit,
                         rightDriveUnit;
@@ -39,26 +41,26 @@ public class Hardware {
 
     public static LimitSwitch clawUpLimitSwitch,
                         clawDownLimitSwitch;
+
     //Init all the hardware
     public Hardware() {
-        //Init limit switches
-        stopLinearSlideUp = new DigitalInput(RobotMap.stopLinearSlideDown);
-        stopLinearSlideDown = new DigitalInput(RobotMap.stopLinearSlideUp);
-
 
         //Init drivetrain motors
         frontLeftDriveMotor = new MotorController(RobotMap.frontLeftMotor);
         backLeftDriveMotor = new MotorController(RobotMap.backLeftMotor);
         frontRightDriveMotor = new MotorController(RobotMap.frontRightMotor);
-        backLeftDriveMotor = new MotorController(RobotMap.backLeftMotor);
+        backRightDriveMotor = new MotorController(RobotMap.backRightMotor);
         
         //Init drive unit objects
         leftDriveUnit = new DriveUnit(frontLeftDriveMotor, backLeftDriveMotor, UnitSide.LEFT);
         rightDriveUnit = new DriveUnit(frontRightDriveMotor, backRightDriveMotor, UnitSide.RIGHT);
         driveTrain = new DriveTrain(rightDriveUnit, leftDriveUnit);
 
-        //Init subsystems
-        linearSlide = new LinearSlide(RobotMap.linearSlideMotor);
+        ///////////LINEAR SLIDE/////////
+        linearSlideLeftLift = new MotorController(RobotMap.linearSlideLeftLift);
+        linearSlideRightLift = new MotorController(RobotMap.linearSlideRightLift);
+        linearSlideRightLift.setFollower(linearSlideRightLift);//Make the right lifter follow the left lifter so that they will always do the same thing
+        linearSlide = new LinearSlide();
 
         frontDistanceSensor = new UltrasonicSensor(RobotMap.ultrasonicTriggerChannel, RobotMap.ultrasonicEchoChannel);
         //Claw//

@@ -76,6 +76,10 @@ public class ClawSubsystem extends Subsystem {
     angleMotor.setPercentSpeed(0.0);
   }
 
+  /**
+   * Gets the position of the claw
+   * @return A ClawPosition Enum describing the position of the claw
+   */
   public ClawPosition getClawPosition() {
     ClawPosition position = ClawPosition.IN_BETWEEN;
 

@@ -137,6 +137,7 @@ public class Robot extends TimedRobot {
     double x = joystick.getX();
     double y = joystick.getY();
 
+    driveTrain.setReverseMode(false);
     driveTrain.driveWithJoystick(x, y, throttle);
 
     Scheduler.getInstance().run();

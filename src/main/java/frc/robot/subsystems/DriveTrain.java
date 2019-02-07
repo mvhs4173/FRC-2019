@@ -148,8 +148,8 @@ public class DriveTrain extends Subsystem {
 			R = -R;
 		}
 		
-		leftUnit.setVelocityFPS(L);//The 30 increases speed
-		rightUnit.setVelocityFPS(R);
+		leftUnit.setVelocityFPS(-L);//The 30 increases speed
+		rightUnit.setVelocityFPS(-R);
 		
 		SmartDashboard.putNumber("Requested Left Speed",  L*20);
 		SmartDashboard.putNumber("Requested Right Speed",  R*20);
