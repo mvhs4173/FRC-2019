@@ -7,26 +7,53 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Hardware;
+import frc.robot.subsystems.DriveTrain;
 import frc.robot.Robot;
 
 /**
  * An example command.  You can replace me with your own command.
  */
-public class ExampleCommand extends Command {
-  public ExampleCommand() {
+public class AutoAssist extends Command {
+  private boolean driverHasControl = false;//Indicates if the driver has manual control over the robot
+  private DriveTrain driveTrain;
+  private Joystick joystick;
+
+  public enum TargetType {
+    HATCH,
+    CARGO;
+  }
+
+  public enum TargetLevel {
+    LOW,
+    MEDIUM,
+    HIGH;
+  }
+
+  public AutoAssist(Joystick joystick) {
     // Use requires() here to declare subsystem dependencies
-    requires(Robot.m_subsystem);
+    requires(Hardware.driveTrain);
+    driveTrain = Hardware.driveTrain;
+    this.joystick = joystick;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    driverHasControl = true;//Give the driver control until we detect that we need to take over
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    //If the driver currently has control over the robot
+    if (driverHasControl) {
+      driveTrain.driveWithJoystick(joystick.getX(), joystick.getY(), joystick.getThrottle());
+    }else {
+      driveTrain.driveUnitAtRPM(0.0);
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()

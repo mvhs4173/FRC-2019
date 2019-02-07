@@ -15,6 +15,7 @@ public class MotorController {
 	private final double rpsToClicksPer100ms = rpmToClicksPer100ms*60;
 	private final double actualOverRequestedRPM =  0.85589;
 	private int origin = 0;
+	private static LinearMap power_RPM = new LinearMap(0,0,1,1000);
 	
 	/***
 	 * 
@@ -27,6 +28,10 @@ public class MotorController {
 		setBrakeMode(true);	configPID(0.01, 0.0, 0.1, 1);
 		//Set the thing that we use as an encoder
 		ticksPerShaftRotation = 4096;
+	}
+
+	public static double getPowerFromRPM (double desiredRPM){
+		return power_RPM.backward(desiredRPM);
 	}
 	
 	/***

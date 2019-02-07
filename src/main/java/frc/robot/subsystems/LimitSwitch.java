@@ -2,13 +2,14 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
-public class MagneticLimitSwitch {
+public class LimitSwitch {
 	private DigitalInput magSwitch;
-	public MagneticLimitSwitch(int portNumber) {
+	
+	public LimitSwitch(int portNumber) {
 		this.magSwitch = new DigitalInput(portNumber);
 		
 	}
-	public boolean isMagnetClose() {
+	public boolean isTriggered() {
 		return !magSwitch.get();
 	}
 }

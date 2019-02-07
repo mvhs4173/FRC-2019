@@ -22,7 +22,6 @@ public class DriveTrain extends Subsystem {
 	public DriveUnit rightUnit;
 	public DriveUnit leftUnit;
 	private static double distanceBetweenWheels = 22.875/12.0; //feet
-	private LinearMap power_RPM;
 	//Variables for driving in straight line
 	double linePFactor = 0.05;
 	double lineAllowableAngleError = 0.1;
@@ -37,7 +36,6 @@ public class DriveTrain extends Subsystem {
 	public DriveTrain(DriveUnit rightUnit, DriveUnit leftUnit) {
 		this.rightUnit = rightUnit;
 		this.leftUnit = leftUnit;
-		this.power_RPM = new LinearMap(0,0,1,1000);
 	}
 	
 	/**
@@ -393,8 +391,5 @@ public class DriveTrain extends Subsystem {
 	 */
 	public double DpsToFps(double dps){
 		return dps * ((Math.PI*distanceBetweenWheels)/360.0);
-	}
-	public double getPowerFromRPM (double desiredRPM){
-		return power_RPM.backward(desiredRPM);
 	}
 }

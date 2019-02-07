@@ -16,43 +16,30 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  * An example subsystem.  You can replace me with your own Subsystem.
  */
 public class ClawSubsystem extends Subsystem {
-  private MotorController clawMotor;
+  private MotorController gripMotor;
   private MotorController angleMotor;
-  private MotorController cimMotorOne;
-  private MotorController cimMotorTwo;
-  private MagneticLimitSwitch clawOpenLimitSwitch;
-  private MagneticLimitSwitch clawCloseLimitSwitch;
-  private MagneticLimitSwitch clawUpLimitSwitch;
-  private MagneticLimitSwitch clawDownLimitSwitch;
-  private MagneticLimitSwitch intakeOnLimitSwitch;
-  private MagneticLimitSwitch intakeOffLimitSwitch;
-  private double clawSpeed = 1;
+  private MotorController leftIntakeMotor;
+  private MotorController rightIntakeMotor;
+  private LimitSwitch clawUpLimit,
+                  clawDownLimit;
+  private double clawSpeed = MotorController.getPowerFromRPM(1);
   private double origin = 0;
+
   public enum ClawPosition {
     CLAW_UP,
     CLAW_DOWN
   }
 
-  public ClawSubsystem(MotorController clawMotor,
+  public ClawSubsystem(MotorController gripMotor,
                        MotorController angleMotor,
-                       MotorController cimMotorOne,
-                       MotorController cimMotorTwo,
-                       MagneticLimitSwitch clawOpenLimitSwitch,
-                       MagneticLimitSwitch clawCloseLimitSwitch,
-                       MagneticLimitSwitch clawUpLimitSwitch,
-                       MagneticLimitSwitch clawDownLimitSwitch,
-                       MagneticLimitSwitch intakeOnLimitSwitch,
-                       MagneticLimitSwitch intakeOffLimitSwitch) {
-    this.clawMotor = clawMotor;
+                       MotorController leftIntakeMotor,
+                       MotorController rightIntakeMotor,
+                       LimitSwitch clawUpLimit,
+                       LimitSwitch clawDownLimit) {
+    this.gripMotor = gripMotor;
     this.angleMotor = angleMotor;
-    this.cimMotorOne = cimMotorOne;
-    this.cimMotorTwo = cimMotorTwo;
-    this.clawOpenLimitSwitch = clawOpenLimitSwitch;
-    this.clawCloseLimitSwitch = clawCloseLimitSwitch;
-    this.clawUpLimitSwitch = clawUpLimitSwitch;
-    this.clawDownLimitSwitch = clawDownLimitSwitch;
-    this.intakeOnLimitSwitch = intakeOnLimitSwitch;
-    this.intakeOffLimitSwitch = intakeOffLimitSwitch;
+    this.leftIntakeMotor = leftIntakeMotor;
+    this.rightIntakeMotor = rightIntakeMotor;
   }
 
   @Override
@@ -61,61 +48,53 @@ public class ClawSubsystem extends Subsystem {
     // setDefaultCommand(new MySpecialCommand());
   }
 
-  public int getAngleMotorPositionRaw() {
-    return angleMotor.getEncoderPosition();
+  /**
+   * Stops the intake motors
+   */
+  public void stopIntake() {
+    leftIntakeMotor.setVelocityRPM(0);
+    rightIntakeMotor.setVelocityRPM(0);
   }
 
-  public void clawResetOrigin() {
-    angleMotor.setPositionInTicks((int)origin);
+  /**
+   * Raises the system
+   */
+  public void raiseClawSystem() {
+    angleMotor.setPercentSpeed(clawSpeed);
   }
 
-  public void clawOpen() {
-    clawMotor.setVelocityRPM(clawSpeed);
+  /**
+   * Lowers the system
+   */
+  public void lowerClawSystem() {
+    angleMotor.setPercentSpeed(-clawSpeed);
   }
 
-  public void clawClose() {
-    clawMotor.setVelocityRPM(-clawSpeed);
+  /**
+   * Stops the system from moving
+   */
+  public void stopClawSystem() {
+    angleMotor.setPercentSpeed(0.0);
   }
 
-  public void clawUp() {
-    angleMotor.setVelocityRPM(clawSpeed);
-  }
-
-  public void clawDown() {
-    angleMotor.setVelocityRPM(-clawSpeed);
-  }
-
-  public void intakeOn() {
-    cimMotorOne.setVelocityRPM(clawSpeed);
-    cimMotorTwo.setVelocityRPM(clawSpeed);
-  }
-
-  public void intakeOff() {
-    cimMotorOne.setVelocityRPM(0);
-    cimMotorTwo.setVelocityRPM(0);
-  }
-
-  public boolean isClawOpen() {
-    return clawOpenLimitSwitch.isMagnetClose();
-  }
-
-  public boolean isClawClose() {
-    return !clawCloseLimitSwitch.isMagnetClose();
-  }
-
+  /**
+   * Detects if the claw is in the up position
+   */
   public boolean isClawUp() {
-    return clawUpLimitSwitch.isMagnetClose();
+    return clawUpLimit.isTriggered();
   }
 
+  /**
+   * Detects if the claw is in the down position
+   */
   public boolean isClawDown() {
-    return !clawDownLimitSwitch.isMagnetClose();
+    return clawDownLimit.isTriggered();
   }
 
-  public boolean isIntakeOn() {
-    return intakeOnLimitSwitch.isMagnetClose();
-  }
-
-  public boolean isIntakeOff() {
-    return intakeOffLimitSwitch.isMagnetClose();
+  /**
+   * Detects if the claw is in neither the up or down position
+   */
+  public boolean isClawInBetween() {
+    return !clawUpLimit.isTriggered() && !clawDownLimit.isTriggered();
   }
 }

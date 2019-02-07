@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.MotorController;
+import frc.robot.subsystems.UltrasonicSensor;
 import frc.robot.subsystems.DriveUnit.UnitSide;
 import frc.robot.subsystems.DriveUnit;
 import frc.robot.subsystems.DriveTrain;
@@ -22,6 +23,8 @@ public class Hardware {
                         stopMovingDown,
                         stopLinearSlideUp,
                         stopLinearSlideDown;
+
+    public static UltrasonicSensor frontDistanceSensor;
 
     public static DriveTrain driveTrain;
 
@@ -49,5 +52,7 @@ public class Hardware {
 
         //Init subsystems
         linearSlide = new LinearSlide(RobotMap.linearSlideMotor);
+
+        frontDistanceSensor = new UltrasonicSensor(RobotMap.ultrasonicTriggerChannel, RobotMap.ultrasonicEchoChannel);
     }
 }

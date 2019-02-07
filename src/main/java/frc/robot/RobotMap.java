@@ -31,6 +31,9 @@ public class RobotMap {
   public static int linearSlideMovement = 1,
                     stopLinearSlideUp=1,
                     stopLinearSlideDown=2;
+  
+  public static int ultrasonicTriggerChannel = 0;
+  public static int ultrasonicEchoChannel = 1;
 
   // If you are using multiple modules, make sure to define both the port
   // number and the module. For example you with a rangefinder:
