@@ -9,26 +9,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.ClawSubsystem;
 
 /**
  * An example command.  You can replace me with your own command.
  */
- public class MoveClawDown extends Command {
-  private boolean finished = false;
-  private ClawSubsystem clawSubsystem;
-  // Positive position of the claw
-  private int clawNegativePosition = 10;
-  private int clawEncoderPosition;
-  private int clawTargetPosition;
-  // Limit switches for clawMotor and angleMotor
-  private ClawSubsystem clawCloseLimitSwitch;
-  private ClawSubsystem clawDownLimitSwitch;
-
-  public MoveClawDown(ClawSubsystem clawSubsystem) {
+public class ExampleCommand extends Command {
+  public ExampleCommand() {
     // Use requires() here to declare subsystem dependencies
-    requires(clawSubsystem);
-    this.clawSubsystem = clawSubsystem;
+    requires(Robot.m_subsystem);
   }
 
   // Called just before this Command runs the first time
@@ -39,16 +27,12 @@ import frc.robot.subsystems.ClawSubsystem;
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    clawEncoderPosition = clawSubsystem.getAngleMotorPositionRaw();
-    clawSubsystem.clawOpen();
-    clawSubsystem.clawDown();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    boolean temp = clawCloseLimitSwitch == clawDownLimitSwitch;
-    return temp;
+    return false;
   }
 
   // Called once after isFinished returns true

@@ -38,12 +38,13 @@ import frc.robot.subsystems.CollectorSubsystem;
   protected void execute() {
     clawEncoderPosition = clawSubsystem.getAngleMotorPositionRaw();
     clawSubsystem.clawOpen();
+    clawSubsystem.clawUp();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    boolean temp = clawEncoderPosition == clawTargetPosition;
+    boolean temp = clawOpenLimitSwitch == clawUpLimitSwitch;
     return temp;
   }
 
