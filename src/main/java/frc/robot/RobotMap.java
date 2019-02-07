@@ -22,10 +22,6 @@ public class RobotMap {
   public static int frontRightMotor = 3;
   public static int backRightMotor = 4;
 
-  public static int stopIntake = 0,
-                    collectorDown = 1,
-                    collectorUp = 2;
-
   public static int linearSlideMotor = 5;
 
   public static int linearSlideMovement = 1,
@@ -34,6 +30,9 @@ public class RobotMap {
   
   public static int ultrasonicTriggerChannel = 0;
   public static int ultrasonicEchoChannel = 1;
+
+  public static int clawGripMotor = 5;
+  public static int clawAngleMotor = 7;
 
   // If you are using multiple modules, make sure to define both the port
   // number and the module. For example you with a rangefinder:

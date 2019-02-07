@@ -6,6 +6,8 @@ import frc.robot.subsystems.MotorController;
 import frc.robot.subsystems.UltrasonicSensor;
 import frc.robot.subsystems.DriveUnit.UnitSide;
 import frc.robot.subsystems.DriveUnit;
+import frc.robot.subsystems.LimitSwitch;
+import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.LinearSlide;
 
@@ -13,7 +15,11 @@ public class Hardware {
     public static MotorController frontLeftDriveMotor,
                                 backLeftDriveMotor,
                                 frontRightDriveMotor,
-                                backRightDriveMotor;
+                                backRightDriveMotor,
+                                clawGripMotor,
+                                clawAngleMotor,
+                                clawLeftIntake,
+                                clawRightIntake;
 
     public static DriveUnit leftDriveUnit,
                         rightDriveUnit;
@@ -29,12 +35,13 @@ public class Hardware {
     public static DriveTrain driveTrain;
 
     public static LinearSlide linearSlide;
+    public static ClawSubsystem claw;
+
+    public static LimitSwitch clawUpLimitSwitch,
+                        clawDownLimitSwitch;
     //Init all the hardware
     public Hardware() {
         //Init limit switches
-        stopIntakeSystem = new DigitalInput(RobotMap.stopIntake);
-        stopMovingDown = new DigitalInput(RobotMap.collectorDown);
-        stopMovingUp = new DigitalInput (RobotMap.collectorUp);
         stopLinearSlideUp = new DigitalInput(RobotMap.stopLinearSlideDown);
         stopLinearSlideDown = new DigitalInput(RobotMap.stopLinearSlideUp);
 
@@ -54,5 +61,15 @@ public class Hardware {
         linearSlide = new LinearSlide(RobotMap.linearSlideMotor);
 
         frontDistanceSensor = new UltrasonicSensor(RobotMap.ultrasonicTriggerChannel, RobotMap.ultrasonicEchoChannel);
+        //Claw//
+        clawGripMotor = new MotorController(RobotMap.clawGripMotor);
+        clawAngleMotor = new MotorController(RobotMap.clawAngleMotor);
+        clawLeftIntake = new MotorController(RobotMap.clawLeftIntake);
+        clawRightIntake = new MotorController(RobotMap.clawRightIntake);
+
+        clawUpLimitSwitch = new LimitSwitch(RobotMap.clawUpLimitChannel);
+        clawDownLimitSwitch = new LimitSwitch(RobotMap.clawDownLimitChannel);
+
+        claw = new ClawSubsystem();
     }
 }

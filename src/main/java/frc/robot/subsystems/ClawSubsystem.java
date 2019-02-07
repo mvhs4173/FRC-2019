@@ -22,24 +22,21 @@ public class ClawSubsystem extends Subsystem {
   private MotorController rightIntakeMotor;
   private LimitSwitch clawUpLimit,
                   clawDownLimit;
+
   private double clawSpeed = MotorController.getPowerFromRPM(1);
-  private double origin = 0;
 
   public enum ClawPosition {
     CLAW_UP,
     CLAW_DOWN
   }
 
-  public ClawSubsystem(MotorController gripMotor,
-                       MotorController angleMotor,
-                       MotorController leftIntakeMotor,
-                       MotorController rightIntakeMotor,
-                       LimitSwitch clawUpLimit,
-                       LimitSwitch clawDownLimit) {
-    this.gripMotor = gripMotor;
-    this.angleMotor = angleMotor;
-    this.leftIntakeMotor = leftIntakeMotor;
-    this.rightIntakeMotor = rightIntakeMotor;
+  public ClawSubsystem() {
+    this.gripMotor = Hardware.clawGripMotor;
+    this.angleMotor = Hardware.clawAngleMotor;
+    this.leftIntakeMotor = Hardware.clawLeftIntake;
+    this.rightIntakeMotor = Hardware.clawRightIntake;
+    this.clawUpLimit = Hardware.clawUpLimitSwitch;
+    this.clawDownLimit = Hardware.clawDownLimitSwitch;
   }
 
   @Override
