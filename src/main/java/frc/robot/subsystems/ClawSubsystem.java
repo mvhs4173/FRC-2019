@@ -37,8 +37,6 @@ public class ClawSubsystem extends Subsystem {
     this.angleMotor = Hardware.clawAngleMotor;
     this.leftIntakeMotor = Hardware.clawLeftIntake;
     this.rightIntakeMotor = Hardware.clawRightIntake;
-    this.clawUpLimit = Hardware.clawUpLimitSwitch;
-    this.clawDownLimit = Hardware.clawDownLimitSwitch;
   }
 
   @Override
@@ -83,12 +81,19 @@ public class ClawSubsystem extends Subsystem {
   public ClawPosition getClawPosition() {
     ClawPosition position = ClawPosition.IN_BETWEEN;
 
-    if (this.clawUpLimit.isTriggered()) {
+    //When the top limit switch is enabled
+    if (angleMotor.getForwardLimitSwitchTriggered()) {
       position = ClawPosition.CLAW_UP;
-    }else if(this.clawDownLimit.isTriggered()) {
+    
+    //When the bottom limit switch is triggered
+    }else if(angleMotor.getRevereseLimitSwitchTriggered()) {
       position = ClawPosition.CLAW_DOWN;
-    }else if(!this.clawDownLimit.isTriggered() && !this.clawDownLimit.isTriggered()){
+
+    //If neither limit switch is triggered then it is in between the max and minumum height
+    }else if(!angleMotor.getForwardLimitSwitchTriggered() && !angleMotor.getRevereseLimitSwitchTriggered()){
       position = ClawPosition.IN_BETWEEN;
+
+    //If both switches are triggered then there is something wrong, this is an invalid position
     }else {
       position = ClawPosition.INVALID;
     }

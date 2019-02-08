@@ -62,9 +62,10 @@ public class Hardware {
         clawAngleMotor = new MotorController(RobotMap.clawAngleMotor);
         clawLeftIntake = new MotorController(RobotMap.clawLeftIntake);
         clawRightIntake = new MotorController(RobotMap.clawRightIntake);
-
-        clawUpLimitSwitch = new LimitSwitch(RobotMap.clawUpLimitChannel);
-        clawDownLimitSwitch = new LimitSwitch(RobotMap.clawDownLimitChannel);
+        
+        //Enable limit switches on the angle motor so that the motor will stop when either of them are triggered
+        clawAngleMotor.enableForwardLimitSwitch();
+        clawAngleMotor.enableReverseLimitSwitch();
 
         claw = new ClawSubsystem();
     }
