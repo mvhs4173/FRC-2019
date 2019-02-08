@@ -26,12 +26,6 @@ public class Hardware {
     public static DriveUnit leftDriveUnit,
                         rightDriveUnit;
 
-    public static DigitalInput stopIntakeSystem,
-                        stopMovingUp,
-                        stopMovingDown,
-                        stopLinearSlideUp,
-                        stopLinearSlideDown;
-
     public static UltrasonicSensor frontDistanceSensor;
 
     public static DriveTrain driveTrain;

@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.CAN;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.subsystems.LinearSlide;
 import frc.robot.Hardware;
@@ -30,8 +31,10 @@ public class MoveLinearSlideDown extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    
+    int currentPosition = linearSlide.getPosition();
     linearSlide.moveSlideDown();
-    if (Hardware.stopLinearSlideUp.get() == true) {
+    if (currentPosition <= 1000) {
       linearSlide.stopSlideMovement();
       isFinished = true;
     }

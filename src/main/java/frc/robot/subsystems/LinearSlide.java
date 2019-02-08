@@ -18,28 +18,30 @@ public class LinearSlide extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  private MotorController leftLift;
-  private MotorController rightLift; 
+  private MotorController lifter;
 
   public LinearSlide(){
-    this.leftLift = Hardware.linearSlideLeftLift;
-    this.rightLift = Hardware.linearSlideRightLift;
+    this.lifter = Hardware.linearSlideLeftLift;
   }
 
 public int getPosition() {
-  return leftLift.getEncoderPosition(); 
+  return lifter.getEncoderPosition(); 
 }
 
 public void moveSlideUp() {
-  leftLift.setVelocityRPM(50);
+  lifter.setVelocityRPM(50);
 }
 
 public void moveSlideDown() {
-  leftLift.setVelocityRPM(-50);
+  lifter.setVelocityRPM(-50);
 }
 
 public void stopSlideMovement(){
-  leftLift.setVelocityRPM(0);
+  lifter.setVelocityRPM(0);
+}
+
+public void setPowerToZero() {
+   lifter.setPercentSpeed(0);
 }
 
   @Override

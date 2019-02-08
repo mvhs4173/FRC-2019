@@ -260,4 +260,20 @@ public class MotorController {
 	public double getAmps() {
 		return controller.getOutputCurrent();
 	}
+
+	/**
+	 * Gets the state of the forward limit switch connected to the Motor Controller
+	 * @return A boolean, true if the forward switch is been triggered
+	 */
+	public boolean getForwardLimitSwitchTriggered() {
+		return controller.getSensorCollection().isFwdLimitSwitchClosed();
+	}
+
+	/**
+	 * Gets the state of the reverse limit switch connected to the Motor Controller
+	 * @return A boolean, true if the reverse switch has been triggered
+	 */
+	public boolean getRevereseLimitSwitchTriggered() {
+		return controller.getSensorCollection().isRevLimitSwitchClosed();
+	}
 }	
