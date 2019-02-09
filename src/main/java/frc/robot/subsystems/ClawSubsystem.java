@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.*;
 
@@ -35,8 +36,10 @@ public class ClawSubsystem extends Subsystem {
   public ClawSubsystem() {
     this.gripMotor = Hardware.clawGripMotor;
     this.angleMotor = Hardware.clawAngleMotor;
-    this.leftIntakeMotor = Hardware.clawLeftIntake;
+    this.leftIntakeMotor =  Hardware.clawLeftIntake;
     this.rightIntakeMotor = Hardware.clawRightIntake;
+    rightIntakeMotor.setFollower(leftIntakeMotor);
+    rightIntakeMotor.setFollowerDirection(InvertType.OpposeMaster);
   }
 
   @Override
@@ -50,8 +53,22 @@ public class ClawSubsystem extends Subsystem {
    */
   public void stopIntake() {
     leftIntakeMotor.setVelocityRPM(0);
-    rightIntakeMotor.setVelocityRPM(0);
+    //rightIntakeMotor.setVelocityRPM(0);
   }
+
+  public void intakeCargo(){
+    leftIntakeMotor.setPercentSpeed(1);
+  }
+
+  public void expelCargo(){
+    leftIntakeMotor.setPercentSpeed(-1);
+  }
+
+  /*
+  public boolean cargoSwitchPressed(){
+    return cargoLimit.isTriggered();
+  }
+  */
 
   /**
    * Raises the system

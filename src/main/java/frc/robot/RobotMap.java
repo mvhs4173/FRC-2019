@@ -27,17 +27,17 @@ public class RobotMap {
 
 
   //////////CLAW SYSTEM IDs////////////
-  public static int clawGripMotor = 5;
-  public static int clawAngleMotor = 7;
-  public static int clawLeftIntake = 8;
-  public static int clawRightIntake = 9;
+  public static int clawGripMotor = 7;
+  public static int clawAngleMotor = 8;
+  public static int clawLeftIntake = 6;
+  public static int clawRightIntake = 5;
 
   public static int clawUpLimitChannel = 2;
   public static int clawDownLimitChannel = 3;
 
   ///////////Linear Slide IDs/////////////
-  public static int linearSlideLeftLift = 5;
-  public static int linearSlideRightLift = 6;
+  public static int linearSlideLeftLift = 9;
+  public static int linearSlideRightLift = 10;
 
 
   // If you are using multiple modules, make sure to define both the port

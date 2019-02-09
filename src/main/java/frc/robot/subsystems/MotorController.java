@@ -276,4 +276,8 @@ public class MotorController {
 	public boolean getRevereseLimitSwitchTriggered() {
 		return controller.getSensorCollection().isRevLimitSwitchClosed();
 	}
+
+	public void setFollowerDirection(InvertType type){
+		controller.setInverted(type);
+	}
 }	

@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.Hardware;
 import frc.robot.Robot;
 import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ClawSubsystem.ClawPosition;
@@ -21,10 +22,10 @@ import frc.robot.subsystems.ClawSubsystem.ClawPosition;
   private ClawSubsystem claw;
   // Limit switches for clawMotor and angleMotor
 
-  public MoveClawDown(ClawSubsystem clawSubsystem) {
+  public MoveClawDown() {
     // Use requires() here to declare subsystem dependencies
-    requires(clawSubsystem);
-    this.claw = clawSubsystem;
+    requires(Hardware.claw);
+    this.claw = Hardware.claw;
   }
 
   // Called just before this Command runs the first time

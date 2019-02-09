@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.commands.*;
 import frc.robot.*;
 /**
@@ -19,8 +20,15 @@ import frc.robot.*;
 public class OI {
   public static Joystick joy = new Joystick(0);
 	public static Joystick launchpad = new Joystick(1);
- 
-  public OI (){}
+  public Button slideUp = new JoystickButton(joy, 1),
+        slideDown = new JoystickButton(joy, 2),
+        intakeCargo = new JoystickButton(joy,3),
+        expelCargo = new JoystickButton(joy,4),
+        angleCollectorDown = new JoystickButton(joy,5),
+        angleCollectorUp = new JoystickButton(joy, 6),
+        releseHatch = new JoystickButton(joy, 7),
+        gripHatch = new JoystickButton(joy, 8);
+  public OI (){
   //// CREATING BUTTONS
   // One type of button is a joystick button which is any button on a
   //// joystick.
@@ -48,4 +56,16 @@ public class OI {
   // Start the command when the button is released and let it run the command
   // until it is finished as determined by it's isFinished method.
   // button.whenReleased(new ExampleCommand());
+    slideUp.whenPressed(new MoveLinearSlideUp());
+    slideDown.whenPressed(new MoveLinearSlideDown());
+    intakeCargo.whenPressed(new IntakeCargo());
+    expelCargo.whenPressed(new ExpelCargo());
+    angleCollectorDown.whenPressed(new MoveClawDown());
+    angleCollectorUp.whenPressed(new MoveClawUp());
+    releseHatch.whenPressed(new ReleseHatch());
+    gripHatch.whenPressed(new GripHatch());
+    intakeCargo.whenReleased(new StopIntake());
+    expelCargo.whenReleased(new StopIntake());
+
+  }
 }
