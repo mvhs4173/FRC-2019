@@ -1,20 +1,29 @@
+#!/usr/bin/env python3
 import cv2
 import numpy as np
-import math
+import time
+from cscore import CameraServer
 
 #Camera resolution
-cameraWidth = 640
-cameraHeight = 480
-
+cameraWidth = 480
+cameraHeight = 360
 
 #Set up the camera
-cap = cv2.VideoCapture(0)
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, cameraWidth)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, cameraHeight)
+camServer = CameraServer.getInstance()
+camServer.enableLogging()
+
+#outputStream = camServer.putVideo("Vision", cameraWidth, cameraHeight)
+camera = camServer.startAutomaticCapture();
+camera.setResolution(cameraWidth, cameraHeight)
+cvSink = camServer.getVideo()
+#camera = cv2.VideoCapture(0)
+#camera.set(cv2.CAP_PROP_FRAME_WIDTH, cameraWidth);
+#camera.set(cv2.CAP_PROP_FRAME_HEIGHT, cameraHeight);
+
 
 #Gets the distance between the points in pixels
 def distanceBetweenPoints(p1, p2):
-    return int(math.sqrt(abs(p2[0] - p1[0])**2 + abs(p2[1] - p1[1])**2));
+    return int(np.sqrt([abs(p2[0] - p1[0])**2 + abs(p2[1] - p1[1])**2])[0])
 
 #Orders the points given and return them in an array in the following order
 #Index 0: Top Left Point
@@ -49,7 +58,7 @@ def order_points(pts):
                 bottom1 = point
             else:
                 bottom2 = point
-    if top1 is not None and bottom1 is not None:
+    if top1 is not None and bottom1 is not None and top2 is not None and bottom2 is not None:
         if top1[0] < top2[0]:
             topLeft = top1
             topRight = top2
@@ -216,11 +225,9 @@ class Vision:
 
         kernel = np.ones((10, 10), np.uint8)
         opening = cv2.morphologyEx(grayImage, cv2.MORPH_CLOSE, kernel)#Get rid of extra noise
-
-        cv2.imshow("Gray", grayImage)
         
         #Now find the contours in the image to find what we are looking for
-        contours, h = cv2.findContours(opening, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+        cntImage, contours, h = cv2.findContours(opening, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
         return contours
 
     def getTwoLargestContours(contourList):
@@ -402,9 +409,11 @@ class Vision:
 ########################################################################
 
 vision = Vision()#Init vision processing object
+frame = np.zeros(shape=(cameraHeight, cameraWidth, 3), dtype=np.uint8)
+
  
 while True:
-    _, frame = cap.read()
+    _, frame = cvSink.grabFrame(frame)
 
     visionTarget = vision.findNearestVisionTarget(frame)
 
@@ -421,13 +430,8 @@ while True:
         else:
             cv2.rectangle(frame, (boxCoordinates[0][0], boxCoordinates[0][1]), (boxCoordinates[1][0], boxCoordinates[1][1]), (0, 0, 255), 2)
             cv2.putText(frame,'Field Target - Unaligned',(boxCoordinates[0][0], boxCoordinates[0][1] - 30), font, 0.8,(255,255,255),2,cv2.LINE_AA)
-            
-    
-    cv2.imshow("frame", frame)
- 
-    key = cv2.waitKey(1)
-    if key == 27:
-        break
+	
+    #outputStream.putFrame(frame)
+    #time.sleep(1/60)
  
 cap.release()
-cv2.destroyAllWindows()
