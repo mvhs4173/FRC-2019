@@ -28,20 +28,20 @@ public int getPosition() {
   return lifter.getEncoderPosition(); 
 }
 
-public void moveSlideUp() {
-  lifter.setVelocityRPM(50);
+/**
+ * Sets the speed of the lifter motors
+ * @param rpm The speed in RPMs
+ */
+public void setLifterSpeedRPM(double rpm) {
+  lifter.setVelocityRPM(rpm);
 }
 
-public void moveSlideDown() {
-  lifter.setVelocityRPM(-50);
-}
-
-public void stopSlideMovement(){
-  lifter.setVelocityRPM(0);
-}
-
-public void setPowerToZero() {
-   lifter.setPercentSpeed(0);
+/**
+ * Gets the current speed of the motor
+ * @return The speed of the motor in RPMs
+ */
+public double getLifterSpeedRPM() {
+  return lifter.getVelocityRPM();
 }
 
   @Override

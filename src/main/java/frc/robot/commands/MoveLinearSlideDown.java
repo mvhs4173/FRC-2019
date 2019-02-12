@@ -14,8 +14,12 @@ import frc.robot.Hardware;
 
 public class MoveLinearSlideDown extends Command {
   private LinearSlide linearSlide;
-  boolean isFinished = false;
+  double speedRPM = -50;
   
+  /**
+   * This command will be used for manually moving the linear slide down to a certain position
+   * Uses a constant speed
+   */
   public MoveLinearSlideDown() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -31,16 +35,7 @@ public class MoveLinearSlideDown extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    
-    int currentPosition = linearSlide.getPosition();
-    linearSlide.moveSlideDown();
-    if (currentPosition <= 1000) {
-      linearSlide.stopSlideMovement();
-      isFinished = true;
-    }
-    else {
-      linearSlide.moveSlideDown();
-    }
+    linearSlide.setLifterSpeedRPM(speedRPM);
   }
 
   // Make this return true when this Command no longer needs to run execute()

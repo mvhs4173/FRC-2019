@@ -74,14 +74,14 @@ public class ClawSubsystem extends Subsystem {
    * Raises the system
    */
   public void raiseClawSystem() {
-    angleMotor.setPercentSpeed(clawSpeed);
+    angleMotor.setPercentSpeed(-1);
   }
 
   /**
    * Lowers the system
    */
   public void lowerClawSystem() {
-    angleMotor.setPercentSpeed(-clawSpeed);
+    angleMotor.setPercentSpeed(0.75);
   }
 
   /**

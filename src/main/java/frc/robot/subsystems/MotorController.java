@@ -74,7 +74,7 @@ public class MotorController {
 	 */
 	public void configQuadEncoder() {
 		controller.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,  0,  standardTimeoutMs);
-		ticksPerShaftRotation = 1024;
+		ticksPerShaftRotation = 256;
 	}
 	
 	/**

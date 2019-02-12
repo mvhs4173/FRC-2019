@@ -13,8 +13,12 @@ import frc.robot.Hardware;
 
 public class MoveLinearSlideUp extends Command {
   private LinearSlide linearSlide;
-  boolean isFinished = false;
+  double lifterSpeedRPM = 50;
 
+  /**
+   * This command is used for manual movement of the linear slide by the driver
+   * Moves slide at a constant speed
+   */
   public MoveLinearSlideUp() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
@@ -30,22 +34,13 @@ public class MoveLinearSlideUp extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    int currentPosition = linearSlide.getPosition();
-    linearSlide.moveSlideUp();
-    if (currentPosition >= 10000) {
-      linearSlide.stopSlideMovement();
-      isFinished = true;
-    }
-    else {
-      linearSlide.moveSlideUp();
-    }    
-
+    linearSlide.setLifterSpeedRPM(lifterSpeedRPM);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return isFinished;
+    return false;
   }
 
   // Called once after isFinished returns true

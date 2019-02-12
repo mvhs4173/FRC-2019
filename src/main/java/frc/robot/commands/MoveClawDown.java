@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Hardware;
 import frc.robot.Robot;
 import frc.robot.subsystems.ClawSubsystem;
@@ -34,6 +35,8 @@ import frc.robot.subsystems.ClawSubsystem.ClawPosition;
     //Make sure the claw isn't already in the position we want it to be in
     if (claw.getClawPosition() == ClawPosition.CLAW_DOWN) {
       isFinished = true;//Stop the command it's already at the target position
+    }else {
+      isFinished = false;
     }
   }
 
@@ -45,8 +48,11 @@ import frc.robot.subsystems.ClawSubsystem.ClawPosition;
 
       //Check if the claw is in the desired position
       if (claw.getClawPosition() == ClawPosition.CLAW_DOWN) {
+        SmartDashboard.putBoolean("Clawdown Finished", true);
         isFinished = true;//Stop the command
         claw.stopClawSystem();
+      }else {
+        isFinished = false;
       }
     }
   }
@@ -67,5 +73,6 @@ import frc.robot.subsystems.ClawSubsystem.ClawPosition;
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    claw.stopClawSystem();
   }
 }
