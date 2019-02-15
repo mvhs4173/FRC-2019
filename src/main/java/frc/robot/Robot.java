@@ -115,7 +115,14 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
-    Scheduler.getInstance().run();
+    //Put the HSV threshold values on the smart dashboard so that the vision system can retrieve them
+    SmartDashboard.putNumber("HLOW", prefs.getInt("HLOW", 0));
+    SmartDashboard.putNumber("SLOW", prefs.getInt("SLOW", 0));
+    SmartDashboard.putNumber("VLOW", prefs.getInt("VLOW", 0));
+
+    SmartDashboard.putNumber("HHIGH", prefs.getInt("HHIGH", 180));
+    SmartDashboard.putNumber("SHIGH", prefs.getInt("SHIGH", 255));
+    SmartDashboard.putNumber("VHIGH", prefs.getInt("VHIGH", 255));
   }
 
   @Override
@@ -139,15 +146,16 @@ public class Robot extends TimedRobot {
     double y = joystick.getY();
 
     driveTrain.setReverseMode(false);
-    driveTrain.driveWithJoystick(x, y, throttle);
+    driveTrain.driveWithJoystick(x, y*0.3, throttle);
 
     Scheduler.getInstance().run();
   }
 
   /**
-   * This function is called periodically during test mode.
+   * Test mode will run color picker code for vision processing.
    */
   @Override
   public void testPeriodic() {
+    
   }
 }

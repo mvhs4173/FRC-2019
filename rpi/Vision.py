@@ -1,21 +1,130 @@
 #!/usr/bin/env python3
 import cv2
+import json
+import sys
 import numpy as np
 import time
-from cscore import CameraServer
+
+from cscore import CameraServer, VideoSource, CvSource, VideoMode, CvSink, UsbCamera
+from networktables import NetworkTablesInstance
 
 #Camera resolution
-cameraWidth = 480
-cameraHeight = 360
+cameraWidth = 160
+cameraHeight = 120
 
+########Modes##########
+disableVisionProcessing = False
+colorPickerMode = False #Set this to true if color thresholds need to be changed
+testingMode = False
+
+configFile = "/boot/frc.json"
+
+class CameraConfig: pass
+
+team = None
+server = False
+cameraConfigs = []
+
+"""Report parse error."""
+def parseError(str):
+    print("config error in '" + configFile + "': " + str, file=sys.stderr)
+
+"""Read single camera configuration."""
+def readCameraConfig(config):
+    cam = CameraConfig()
+
+    # name
+    try:
+        cam.name = config["name"]
+    except KeyError:
+        parseError("could not read camera name")
+        return False
+
+    # path
+    try:
+        cam.path = config["path"]
+    except KeyError:
+        parseError("camera '{}': could not read path".format(cam.name))
+        return False
+
+    cam.config = config
+
+    cameraConfigs.append(cam)
+    return True
+
+"""Read configuration file."""
+def readConfig():
+    global team
+    global server
+
+    # parse file
+    try:
+        with open(configFile, "rt") as f:
+            j = json.load(f)
+    except OSError as err:
+        print("could not open '{}': {}".format(configFile, err), file=sys.stderr)
+        return False
+
+    # top level must be an object
+    if not isinstance(j, dict):
+        parseError("must be JSON object")
+        return False
+
+    # team number
+    try:
+        team = j["team"]
+    except KeyError:
+        parseError("could not read team number")
+        return False
+
+    # ntmode (optional)
+    if "ntmode" in j:
+        str = j["ntmode"]
+        if str.lower() == "client":
+            server = False
+        elif str.lower() == "server":
+            server = True
+        else:
+            parseError("could not understand ntmode value '{}'".format(str))
+
+    # cameras
+    try:
+        cameras = j["cameras"]
+    except KeyError:
+        parseError("could not read cameras")
+        return False
+    for camera in cameras:
+        if not readCameraConfig(camera):
+            return False
+
+    return True
+
+readConfig()
 #Set up the camera
 camServer = CameraServer.getInstance()
 camServer.enableLogging()
+camera = UsbCamera("rPi Camera 0", 0)
+camera.setFPS(30)
+camera.setResolution(cameraWidth, cameraHeight)
+camServer.addCamera(camera)
+
+cvSink = camServer.getVideo()
+outputStream = camServer.putVideo("Processed Frames", cameraWidth, cameraHeight)
+
+ntinst = NetworkTablesInstance.getDefault()
+
+print("Setting up NetworkTables client for team {}".format(team))
+ntinst.startClientTeam(team)
+dashboard = ntinst.getTable('SmartDashboard')
 
 #outputStream = camServer.putVideo("Vision", cameraWidth, cameraHeight)
-camera = camServer.startAutomaticCapture();
-camera.setResolution(cameraWidth, cameraHeight)
-cvSink = camServer.getVideo()
+
+
+#camera = camServer.startAutomaticCapture();
+#camera.setResolution(cameraWidth, cameraHeight)
+#cvSink = camServer.getVideo()
+
+
 #camera = cv2.VideoCapture(0)
 #camera.set(cv2.CAP_PROP_FRAME_WIDTH, cameraWidth);
 #camera.set(cv2.CAP_PROP_FRAME_HEIGHT, cameraHeight);
@@ -193,8 +302,8 @@ class VisionTarget:
 ########################################################################
 class Vision:
     def __init__(self):
-        self.tapeLowerThresh = np.array([86, 0, 227])
-        self.tapeUpperThresh = np.array([179, 255, 255])
+        self.tapeLowerThresh = np.array([60, 30, 230])
+        self.tapeUpperThresh = np.array([100, 120, 255])
 
     def getRotatedBoxPoints(rect):        
         boxPoints = cv2.boxPoints(rect)
@@ -220,15 +329,15 @@ class Vision:
         
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)#Convert the color space to HSV
         mask = cv2.inRange(hsv, self.tapeLowerThresh, self.tapeUpperThresh)#Search for only the color of what we are looking for
-        blur = cv2.blur(mask, (15, 15))#Blur the image
-        ret, grayImage = cv2.threshold(blur, thresholdValue, thresholdMaxValue, cv2.THRESH_BINARY)#Get the image black and white for edge detection
+        #blur = cv2.blur(mask, (2, 2))#Blur the image
+        ret, grayImage = cv2.threshold(mask, thresholdValue, thresholdMaxValue, cv2.THRESH_BINARY)#Get the image black and white for edge detection
 
         kernel = np.ones((10, 10), np.uint8)
         opening = cv2.morphologyEx(grayImage, cv2.MORPH_CLOSE, kernel)#Get rid of extra noise
         
         #Now find the contours in the image to find what we are looking for
         cntImage, contours, h = cv2.findContours(opening, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-        return contours
+        return contours, cntImage
 
     def getTwoLargestContours(contourList):
         largestContour = []
@@ -336,8 +445,8 @@ class Vision:
             return False;
 
     def findNearestVisionTarget(self, image):
-        contours = self.recognizeReflectiveTape(image)#Find possible contours for reflective tape
-
+        contours, cntImage = self.recognizeReflectiveTape(image)#Find possible contours for reflective tape
+        
         lastCnt = None
         contour1 = None
         contour2 = None
@@ -362,8 +471,7 @@ class Vision:
                     box2Area = width2 * height2
                     
                     #Filter out small contours
-                    if box1Area > 300 and box2Area > 300:
-
+                    if box1Area > 10 and box2Area > 10:
                         #Make sure the boxes resemble a rectangle because thats the shape we are looking for
                         #Now check if the two reflective tapes belong to the same target
                         
@@ -413,25 +521,56 @@ frame = np.zeros(shape=(cameraHeight, cameraWidth, 3), dtype=np.uint8)
 
  
 while True:
-    _, frame = cvSink.grabFrame(frame)
+    gotFrame, frame = cvSink.grabFrame(frame)
+    gotFrame = gotFrame != 0
 
-    visionTarget = vision.findNearestVisionTarget(frame)
+    if not gotFrame:
+        print(str(cvSink.getError()))
 
-    if visionTarget:
-        boxCoordinates = visionTarget.getBoundingBox()
-
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        
-        #Detect if the robot is aligned with the VisionTarget
-        if visionTarget.isAlignedWithCamera():
-            cv2.rectangle(frame, (boxCoordinates[0][0], boxCoordinates[0][1]), (boxCoordinates[1][0], boxCoordinates[1][1]), (0, 255, 0), 2)
-            
-            cv2.putText(frame,'Field Target - Aligned',(boxCoordinates[0][0], boxCoordinates[0][1] - 30), font, 0.8,(255,255,255),2,cv2.LINE_AA)
-        else:
-            cv2.rectangle(frame, (boxCoordinates[0][0], boxCoordinates[0][1]), (boxCoordinates[1][0], boxCoordinates[1][1]), (0, 0, 255), 2)
-            cv2.putText(frame,'Field Target - Unaligned',(boxCoordinates[0][0], boxCoordinates[0][1] - 30), font, 0.8,(255,255,255),2,cv2.LINE_AA)
+    if testingMode == True and gotFrame:
+        colorPickerMode = False
+        disableVisionProcessing = True
+        cnts, cntImage = vision.recognizeReflectiveTape(frame)
+        frame = cntImage
 	
-    #outputStream.putFrame(frame)
-    #time.sleep(1/60)
- 
-cap.release()
+    if colorPickerMode == True and gotFrame:
+        disableVisionProcessing = True
+        
+        #Get thresholds from dashboard
+        hLow = dashboard.getNumber("HLOW", 0)
+        sLow = dashboard.getNumber("SLOW", 0)
+        vLow = dashboard.getNumber("VLOW", 0)
+
+        hHigh = dashboard.getNumber("HHIGH", 180)
+        sHigh = dashboard.getNumber("SHIGH", 255)
+        vHigh = dashboard.getNumber("VHIGH", 255)
+
+        lowerThresh = np.array([hLow, sLow, vLow])
+        upperThresh = np.array([hHigh, sHigh, vHigh])
+
+        #Filter the image
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+        frame = cv2.inRange(hsv, lowerThresh, upperThresh)
+        
+        
+	
+    #Only run if vision is enabled
+    if disableVisionProcessing == False and gotFrame:
+        visionTarget = vision.findNearestVisionTarget(frame)
+
+        if visionTarget:
+            boxCoordinates = visionTarget.getBoundingBox()
+
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            
+            #Detect if the robot is aligned with the VisionTarget
+            if visionTarget.isAlignedWithCamera():
+                cv2.rectangle(frame, (boxCoordinates[0][0], boxCoordinates[0][1]), (boxCoordinates[1][0], boxCoordinates[1][1]), (0, 255, 0), 2)
+                #cv2.putText(frame,'Field Target - Aligned',(boxCoordinates[0][0], boxCoordinates[0][1] - 5), font, 0.2,(255,255,255),1,cv2.LINE_AA)
+            else:
+                cv2.rectangle(frame, (boxCoordinates[0][0], boxCoordinates[0][1]), (boxCoordinates[1][0], boxCoordinates[1][1]), (0, 0, 255), 2)
+                #cv2.putText(frame,'Field Target - Unaligned',(boxCoordinates[0][0], boxCoordinates[0][1] - 5), font, 0.2,(255,255,255),1,cv2.LINE_AA)
+	
+    
+    outputStream.putFrame(frame)

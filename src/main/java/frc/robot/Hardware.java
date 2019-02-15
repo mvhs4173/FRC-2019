@@ -54,6 +54,7 @@ public class Hardware {
         linearSlideLeftLift = new MotorController(RobotMap.linearSlideLeftLift);
         linearSlideRightLift = new MotorController(RobotMap.linearSlideRightLift);
         linearSlideRightLift.setFollower(linearSlideRightLift);//Make the right lifter follow the left lifter so that they will always do the same thing
+        linearSlideLeftLift.configQuadEncoder();//Set up the quadrature encoder linked to the linear slide
         linearSlide = new LinearSlide();
 
         frontDistanceSensor = new UltrasonicSensor(RobotMap.ultrasonicTriggerChannel, RobotMap.ultrasonicEchoChannel);
