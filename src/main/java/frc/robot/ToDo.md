@@ -11,3 +11,6 @@
             *Vision will find the target and align robot with it
             *Move forward until robot is within reaching distance
             *Eject Cargo or Hatch
+
+
+Finish Up and down on linear slide. No power for down.

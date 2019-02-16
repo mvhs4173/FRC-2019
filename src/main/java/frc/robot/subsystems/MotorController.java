@@ -10,7 +10,7 @@ public class MotorController {
     // here. Call these from Commands.
 	private TalonSRX controller;
 	private final int standardTimeoutMs = 10;
-	private int ticksPerShaftRotation = 4096;
+	private int ticksPerShaftRotation = 1024;
 	private final double rpmToClicksPer100ms =  ticksPerShaftRotation/1.0 * 1.0/60.0 * 1.0/10.0;// rev/min = 4096 clicks/rev * 1min/60s * 1s/10 centi seconds
 	private final double rpsToClicksPer100ms = rpmToClicksPer100ms*60;
 	private final double actualOverRequestedRPM =  0.85589;
@@ -23,11 +23,10 @@ public class MotorController {
 	 */
 	public MotorController(int controllerId) {
 		controller = new TalonSRX(controllerId);
-		
 		//Tell the motors to brake if there is no voltage being applied to them
 		setBrakeMode(true);	configPID(0.01, 0.0, 0.1, 1);
 		//Set the thing that we use as an encoder
-		ticksPerShaftRotation = 4096;
+		ticksPerShaftRotation = 1024;
 	}
 
 	public static double getPowerFromRPM (double desiredRPM){
@@ -70,11 +69,11 @@ public class MotorController {
 	}
 	
 	/**
-	 * Sets the feedback device to the CTRE mag encoder
+	 * Sets the feedback device to the Quadrature encoder
 	 */
 	public void configQuadEncoder() {
+		ticksPerShaftRotation = 1024;
 		controller.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,  0,  standardTimeoutMs);
-		ticksPerShaftRotation = 256;
 	}
 	
 	/**
@@ -89,6 +88,7 @@ public class MotorController {
 	 */
 	public void configMagEncoder() {
 		controller.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative, 0, standardTimeoutMs);
+		controller.getSensorCollection().getQuadraturePosition();
 		ticksPerShaftRotation = 4096;
 	}
 	
@@ -149,9 +149,13 @@ public class MotorController {
 	 * @return The position, in ticks of the encoder
 	 */
 	public int getEncoderPosition() {
-		return controller.getSelectedSensorPosition(0) - origin;
+		return controller.getSelectedSensorPosition(1);
 	}
 	
+	public boolean getQuadAState() {
+		return controller.getSensorCollection().getPinStateQuadB();
+	}
+
 	/**
 	 * @return The number of Rotations the shaft of the motor has completed
 	 */
@@ -277,7 +281,7 @@ public class MotorController {
 		return controller.getSensorCollection().isRevLimitSwitchClosed();
 	}
 
-	public void setFollowerDirection(InvertType type){
+	public void setDirection(InvertType type){
 		controller.setInverted(type);
 	}
 }	

@@ -38,6 +38,7 @@ public class RobotMap {
   ///////////Linear Slide IDs/////////////
   public static int linearSlideLeftLift = 9;
   public static int linearSlideRightLift = 10;
+  public static int linearSlideBreak = 11;
 
 
   // If you are using multiple modules, make sure to define both the port

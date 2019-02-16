@@ -27,7 +27,8 @@ public class OI {
         angleCollectorDown = new JoystickButton(joy,5),
         angleCollectorUp = new JoystickButton(joy, 6),
         releseHatch = new JoystickButton(joy, 7),
-        gripHatch = new JoystickButton(joy, 8);
+        gripHatch = new JoystickButton(joy, 8),
+        button12 = new JoystickButton(joy,12);
   public OI (){
   //// CREATING BUTTONS
   // One type of button is a joystick button which is any button on a
@@ -66,6 +67,9 @@ public class OI {
     gripHatch.whenPressed(new GripHatch());
     intakeCargo.whenReleased(new StopIntake());
     expelCargo.whenReleased(new StopIntake());
+    slideUp.whenReleased(new StopLinearSlide());
+    slideDown.whenReleased(new StopLinearSlide());
+    button12.whenPressed(new UpThenBreak());
 
   }
 }

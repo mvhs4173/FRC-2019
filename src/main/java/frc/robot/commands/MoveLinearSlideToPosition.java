@@ -19,9 +19,9 @@ public class MoveLinearSlideToPosition extends Command {
   private boolean isDone = false;
 
   //The encoder positions of all the heights we want the slide to be able to reach
-  private int highPosition = 5000;
-  private int mediumPosition = 2500;
-  private int lowPosition = 1250;
+  private int highPosition = 3600;
+  private int mediumPosition = 1980;
+  private int lowPosition = 0;
 
   private double allowableSpeedError = 5;//The minimum that the motor has to be running at in order for the system to consider the target reached 
   private int allowableError = 100;//The number of ticks that the slide can be off by while still having the target being considered reached
@@ -62,9 +62,6 @@ public class MoveLinearSlideToPosition extends Command {
         break;
     }
 
-    highPosition = Robot.prefs.getInt("High Position", 5000);//For tuning high position ticks
-    mediumPosition = Robot.prefs.getInt("Medium Position", 2500);//For tuning medium position ticks
-    lowPosition = Robot.prefs.getInt("Low Position", 1250);//For tuning low position ticks
   }
 
   // Called just before this Command runs the first time
@@ -75,22 +72,20 @@ public class MoveLinearSlideToPosition extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    pFactor = Robot.prefs.getDouble("pFactor", 0.01);//For tuning the pFactor
-    
+    pFactor = Robot.prefs.getDouble("Linearslide pFactor", 0.01);//For tuning the pFactor
 
     int currentPosition = linearSlide.getPosition();//The current position of the linearSlide in ticks
-    SmartDashboard.putNumber("Linear slide Position", currentPosition);//For debugging
-    
+
     int error = targetSlidePositionTicks - currentPosition;//The difference between the target position and current position
     //Calculate new motor speed to reach target
     double newSpeed = error * pFactor;
 
-    linearSlide.setLifterSpeedRPM(newSpeed);
+    linearSlide.setLifterSpeedRPM(250*newSpeed);
 
     double currentLifterSpeed = linearSlide.getLifterSpeedRPM();//The current speed of the lifter motor in RPMs
 
     //Determine if the slide has reached the desired position
-    if (Math.abs(currentLifterSpeed) <= allowableSpeedError && Math.abs(error) <= allowableError) {
+    if (Math.abs(error) <= allowableError) {
       linearSlide.setLifterSpeedRPM(0);//Stop the slide
       isDone = true;
     }

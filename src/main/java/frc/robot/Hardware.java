@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.MotorController;
@@ -21,7 +23,8 @@ public class Hardware {
                                 clawLeftIntake,
                                 clawRightIntake,
                                 linearSlideLeftLift,
-                                linearSlideRightLift;
+                                linearSlideRightLift,
+                                linearSlideBreak;
 
     public static DriveUnit leftDriveUnit,
                         rightDriveUnit;
@@ -51,10 +54,15 @@ public class Hardware {
         driveTrain = new DriveTrain(rightDriveUnit, leftDriveUnit);
 
         ///////////LINEAR SLIDE/////////
+        linearSlideBreak = new MotorController(RobotMap.linearSlideBreak);
         linearSlideLeftLift = new MotorController(RobotMap.linearSlideLeftLift);
-        linearSlideRightLift = new MotorController(RobotMap.linearSlideRightLift);
-        linearSlideRightLift.setFollower(linearSlideRightLift);//Make the right lifter follow the left lifter so that they will always do the same thing
+        linearSlideLeftLift.setDirection(InvertType.InvertMotorOutput);
         linearSlideLeftLift.configQuadEncoder();//Set up the quadrature encoder linked to the linear slide
+        linearSlideLeftLift.setBrakeMode(true);
+        linearSlideRightLift = new MotorController(RobotMap.linearSlideRightLift);
+        linearSlideRightLift.setFollower(linearSlideLeftLift);//Make the right lifter follow the left lifter so that they will always do the same thing
+        linearSlideRightLift.setDirection(InvertType.OpposeMaster);
+        
         linearSlide = new LinearSlide();
 
         frontDistanceSensor = new UltrasonicSensor(RobotMap.ultrasonicTriggerChannel, RobotMap.ultrasonicEchoChannel);

@@ -15,10 +15,10 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.commands.MoveLinearSlideToPosition;
+import frc.robot.commands.MoveLinearSlideToPosition.SlidePosition;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.LinearSlide;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -34,6 +34,8 @@ public class Robot extends TimedRobot {
   public static Joystick joystick;
   public static DriveTrain driveTrain;
   public static Preferences prefs;
+
+  MoveLinearSlideToPosition moveToMid;
   
 
   Command m_autonomousCommand;
@@ -47,12 +49,13 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     hardware = new Hardware();//Init all the robot hardware
     oi = new OI();
-    m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
+    //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
     prefs = Preferences.getInstance();
     joystick=oi.joy;
     driveTrain=hardware.driveTrain;
+    moveToMid = new MoveLinearSlideToPosition(SlidePosition.MEDIUM);
   }
  
   /**
@@ -96,7 +99,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_chooser.getSelected();
-
+  
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
      * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -107,7 +110,10 @@ public class Robot extends TimedRobot {
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.start();
+      
     }
+    moveToMid.start();
+    
   }
 
   /**
@@ -115,6 +121,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    Scheduler.getInstance().run();
+
     //Put the HSV threshold values on the smart dashboard so that the vision system can retrieve them
     SmartDashboard.putNumber("HLOW", prefs.getInt("HLOW", 0));
     SmartDashboard.putNumber("SLOW", prefs.getInt("SLOW", 0));
@@ -123,6 +131,10 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("HHIGH", prefs.getInt("HHIGH", 180));
     SmartDashboard.putNumber("SHIGH", prefs.getInt("SHIGH", 255));
     SmartDashboard.putNumber("VHIGH", prefs.getInt("VHIGH", 255));
+
+    SmartDashboard.putBoolean("QuadPinState", Hardware.linearSlide.getQuadPinState());
+    SmartDashboard.putNumber("Linearslide Position", Hardware.linearSlide.getPosition());
+    SmartDashboard.putNumber("Linearslide Amperage", Hardware.linearSlide.getAmpUsage());
   }
 
   @Override
@@ -147,6 +159,10 @@ public class Robot extends TimedRobot {
 
     driveTrain.setReverseMode(false);
     driveTrain.driveWithJoystick(x, y*0.3, throttle);
+
+    SmartDashboard.putNumber("Linearslide Position", Hardware.linearSlide.getPosition());
+    SmartDashboard.putBoolean("BreakLimitStatus", Hardware.linearSlide.checkBreak());
+    SmartDashboard.putNumber("LinearAmprege", Hardware.linearSlide.getAmpUsage());
 
     Scheduler.getInstance().run();
   }

@@ -39,7 +39,7 @@ public class ClawSubsystem extends Subsystem {
     this.leftIntakeMotor =  Hardware.clawLeftIntake;
     this.rightIntakeMotor = Hardware.clawRightIntake;
     rightIntakeMotor.setFollower(leftIntakeMotor);
-    rightIntakeMotor.setFollowerDirection(InvertType.OpposeMaster);
+    rightIntakeMotor.setDirection(InvertType.OpposeMaster);
   }
 
   @Override

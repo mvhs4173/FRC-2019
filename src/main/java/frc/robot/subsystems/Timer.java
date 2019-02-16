@@ -10,7 +10,7 @@ public class Timer {
     private double seconds;
     private boolean initialized;
 
-    Timer(){
+    public Timer(){
         initialized = false;
     }
 
