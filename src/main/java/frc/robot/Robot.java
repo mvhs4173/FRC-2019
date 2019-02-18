@@ -15,8 +15,7 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.MoveLinearSlideToPosition;
-import frc.robot.commands.MoveLinearSlideToPosition.SlidePosition;
+import frc.robot.commands.ReleaseLinearBrake;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ExampleSubsystem;
 
@@ -35,8 +34,7 @@ public class Robot extends TimedRobot {
   public static DriveTrain driveTrain;
   public static Preferences prefs;
 
-  MoveLinearSlideToPosition moveToMid;
-  
+  ReleaseLinearBrake releaseBrake; 
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -49,13 +47,13 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     hardware = new Hardware();//Init all the robot hardware
     oi = new OI();
-    //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
+    m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
     prefs = Preferences.getInstance();
     joystick=oi.joy;
     driveTrain=hardware.driveTrain;
-    moveToMid = new MoveLinearSlideToPosition(SlidePosition.MEDIUM);
+    releaseBrake = new ReleaseLinearBrake();
   }
  
   /**
@@ -110,10 +108,10 @@ public class Robot extends TimedRobot {
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.start();
-      
     }
-    moveToMid.start();
-    
+
+    releaseBrake.start();
+    //moveToMid.start();
   }
 
   /**
@@ -161,8 +159,10 @@ public class Robot extends TimedRobot {
     driveTrain.driveWithJoystick(x, y*0.3, throttle);
 
     SmartDashboard.putNumber("Linearslide Position", Hardware.linearSlide.getPosition());
-    SmartDashboard.putBoolean("BreakLimitStatus", Hardware.linearSlide.checkBreak());
+    SmartDashboard.putBoolean("BreakLimitStatus", Hardware.linearSlide.checkBrake());
     SmartDashboard.putNumber("LinearAmprege", Hardware.linearSlide.getAmpUsage());
+
+    SmartDashboard.putString("Claw Position", Hardware.claw.getClawPosition().toString());
 
     Scheduler.getInstance().run();
   }

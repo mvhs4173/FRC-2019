@@ -17,13 +17,13 @@ import frc.robot.subsystems.ClawSubsystem.ClawPosition;
 /**
  * An example command.  You can replace me with your own command.
  */
- public class MoveClawUp extends Command {
+ public class StopClaw extends Command {
   private boolean isFinished = false;
 
   private ClawSubsystem claw;
   // Limit switches for clawMotor and angleMotor
 
-  public MoveClawUp() {
+  public StopClaw() {
     // Use requires() here to declare subsystem dependencies
     requires(Hardware.claw);
     this.claw = Hardware.claw;
@@ -33,30 +33,14 @@ import frc.robot.subsystems.ClawSubsystem.ClawPosition;
   @Override
   protected void initialize() {
     claw.enableUpperLimit();
-    SmartDashboard.putString("Claw Position", claw.getClawPosition().toString());
-    //Make sure the claw isn't already in the position we want it to be in
-    if (claw.getClawPosition() == ClawPosition.CLAW_UP) {
-      isFinished = true;//Stop the command it's already at the target position
-    }else {
-      isFinished = false;
-    }
+    claw.stopClawSystem();
+    isFinished = true;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    SmartDashboard.putString("Claw Position", claw.getClawPosition().toString());
-    
-    if (!isFinished) {
-      claw.raiseClawSystem();
-
-      //Check if the claw is in the desired position
-      if (claw.getClawPosition() == ClawPosition.CLAW_UP) {
-        isFinished = true;//Stop the command
-      }else {
-        isFinished = false;
-      }
-    }
+    claw.stopClawSystem();
   }
 
   // Make this return true when this Command no longer needs to run execute()

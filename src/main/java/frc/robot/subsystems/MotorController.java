@@ -53,6 +53,16 @@ public class MotorController {
 		controller.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, standardTimeoutMs);
 		controller.overrideLimitSwitchesEnable(false);//Enable switch
 	}
+
+	public void disableForwardLimitSwitch() {
+		controller.configForwardLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, standardTimeoutMs);
+		controller.overrideLimitSwitchesEnable(true);//Enable switch
+	}
+
+	public void disableReverseLimitSwitch() {
+		controller.configReverseLimitSwitchSource(LimitSwitchSource.FeedbackConnector, LimitSwitchNormal.NormallyOpen, standardTimeoutMs);
+		controller.overrideLimitSwitchesEnable(true);//Enable switch
+	}
 	
 	public void enableReverseLimitSwitch() {
 		//Tell the controller where the limit switch is plugged in

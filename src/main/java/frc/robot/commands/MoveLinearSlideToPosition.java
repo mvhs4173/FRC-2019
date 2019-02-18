@@ -17,17 +17,18 @@ public class MoveLinearSlideToPosition extends Command {
   private LinearSlide linearSlide;
 
   private boolean isDone = false;
+  private boolean activateBraking = false;
 
   //The encoder positions of all the heights we want the slide to be able to reach
-  private int highPosition = 3600;
-  private int mediumPosition = 1980;
-  private int lowPosition = 0;
+  private int highPosition = LinearSlide.highPosition;
+  private int mediumPosition = LinearSlide.mediumPosition;
+  public  int lowPosition = LinearSlide.lowPosition;
 
-  private double allowableSpeedError = 5;//The minimum that the motor has to be running at in order for the system to consider the target reached 
-  private int allowableError = 100;//The number of ticks that the slide can be off by while still having the target being considered reached
+  public static final int allowableError = LinearSlide.allowableError;//The number of ticks that the slide can be off by while still having the target being considered reached
 
-  private double pFactor = 0.01;//P factor for Proportional loop for smooth movement of the slide
+  private double pFactor = 5300;//P factor for Proportional loop for smooth movement of the slide
 
+  BrakeLinearSlide activateBrake;
 
   private SlidePosition targetSlidePosition;
   private int targetSlidePositionTicks;
@@ -48,6 +49,7 @@ public class MoveLinearSlideToPosition extends Command {
     this.linearSlide = Hardware.linearSlide;
 
     this.targetSlidePosition = slidePosition;
+    activateBrake = new BrakeLinearSlide();
 
     //Determine the target position in ticks
     switch(this.targetSlidePosition) {
@@ -62,11 +64,14 @@ public class MoveLinearSlideToPosition extends Command {
         break;
     }
 
+    SmartDashboard.putNumber("TargetPosition", targetSlidePositionTicks);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    activateBraking = false;
+    isDone = false;
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -79,14 +84,32 @@ public class MoveLinearSlideToPosition extends Command {
     int error = targetSlidePositionTicks - currentPosition;//The difference between the target position and current position
     //Calculate new motor speed to reach target
     double newSpeed = error * pFactor;
+    boolean speedIsNegative = newSpeed < 0;
+    newSpeed = Math.max(Math.sqrt(Math.abs(newSpeed)), 900);
 
-    linearSlide.setLifterSpeedRPM(250*newSpeed);
+    if (speedIsNegative && newSpeed != 900) {
+      newSpeed = -newSpeed;
+    }
 
-    double currentLifterSpeed = linearSlide.getLifterSpeedRPM();//The current speed of the lifter motor in RPMs
+    if (targetSlidePositionTicks < currentPosition || targetSlidePositionTicks == 0) {
+      newSpeed = 0.0;
+    }
+
+    SmartDashboard.putNumber("Linearslide Speed", newSpeed);
+    SmartDashboard.putNumber("Linearslide Error", error);
+
+    linearSlide.setLifterSpeedRPM(newSpeed);
+
 
     //Determine if the slide has reached the desired position
-    if (Math.abs(error) <= allowableError) {
-      linearSlide.setLifterSpeedRPM(0);//Stop the slide
+    if (Math.abs(error) <= allowableError && activateBraking == false) {
+      activateBrake.start();
+      activateBraking = true;
+    }
+
+
+    if (activateBrake.isFinished()) {
+      linearSlide.stopSlide();
       isDone = true;
     }
   }

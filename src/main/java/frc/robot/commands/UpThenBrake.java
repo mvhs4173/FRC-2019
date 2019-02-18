@@ -10,15 +10,13 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.commands.MoveLinearSlideToPosition.SlidePosition;
 
-public class UpThenBreak extends CommandGroup {
+public class UpThenBrake extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public UpThenBreak() {
-    addParallel(new MoveLinearSlideUp(), 1);
-    addSequential(new ReleaseLinearBreak());
-    addSequential(new MoveLinearSlideToPosition(SlidePosition.LOW));
-    addSequential(new BreakLinearSlide());
+  public UpThenBrake(SlidePosition slidePosition) {
+    addSequential(new ReleaseLinearBrake());
+    addSequential(new MoveLinearSlideToPosition(slidePosition));
     // Add Commands here:
     // e.g. addSequential(new Command1());
     // addSequential(new Command2());

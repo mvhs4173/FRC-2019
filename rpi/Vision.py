@@ -557,7 +557,7 @@ while True:
 	
     #Only run if vision is enabled
     if disableVisionProcessing == False and gotFrame:
-        visionTarget = vision.findNearestVisionTarget(frame)
+        visionTarget, frame = vision.findNearestVisionTarget(frame)
 
         if visionTarget:
             boxCoordinates = visionTarget.getBoundingBox()

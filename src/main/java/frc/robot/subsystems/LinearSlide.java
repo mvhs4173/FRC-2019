@@ -18,6 +18,13 @@ public class LinearSlide extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
+  public static final int highPosition = 3800;
+  public static final int mediumPosition = 1700;
+  public static final int lowPosition = 0;
+
+  public static final int allowableError = 100;
+
+
   private MotorController lifter,
                           breakMotor;
 
@@ -69,7 +76,7 @@ public class LinearSlide extends Subsystem {
     breakMotor.setPercentSpeed(0);
   }
 
-  public boolean checkBreak(){
+  public boolean checkBrake() {
     return breakMotor.getForwardLimitSwitchTriggered();
   }
 

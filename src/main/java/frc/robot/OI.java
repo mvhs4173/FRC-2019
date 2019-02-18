@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.commands.*;
+import frc.robot.commands.MoveLinearSlideToPosition.SlidePosition;
 import frc.robot.*;
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -20,15 +21,19 @@ import frc.robot.*;
 public class OI {
   public static Joystick joy = new Joystick(0);
 	public static Joystick launchpad = new Joystick(1);
-  public Button slideUp = new JoystickButton(joy, 1),
-        slideDown = new JoystickButton(joy, 2),
-        intakeCargo = new JoystickButton(joy,3),
-        expelCargo = new JoystickButton(joy,4),
-        angleCollectorDown = new JoystickButton(joy,5),
-        angleCollectorUp = new JoystickButton(joy, 6),
+  public Button slideUp = new JoystickButton(launchpad, 3),
+        slideDown = new JoystickButton(launchpad, 4),
+        intakeCargo = new JoystickButton(launchpad, 1),
+        expelCargo = new JoystickButton(launchpad, 2),
+        angleCollectorDown = new JoystickButton(launchpad, 10),
+        angleCollectorUp = new JoystickButton(launchpad, 15),
         releseHatch = new JoystickButton(joy, 7),
         gripHatch = new JoystickButton(joy, 8),
-        button12 = new JoystickButton(joy,12);
+        button12 = new JoystickButton(joy,12),
+        stowClaw = new JoystickButton(launchpad, 11),
+        slideLow = new JoystickButton(launchpad, 6),
+        slideMedium = new JoystickButton(launchpad, 7),
+        slideHigh = new JoystickButton(launchpad, 9);
   public OI (){
   //// CREATING BUTTONS
   // One type of button is a joystick button which is any button on a
@@ -69,7 +74,10 @@ public class OI {
     expelCargo.whenReleased(new StopIntake());
     slideUp.whenReleased(new StopLinearSlide());
     slideDown.whenReleased(new StopLinearSlide());
-    button12.whenPressed(new UpThenBreak());
-
+    stowClaw.whenPressed(new MoveClawUpNoLimit());
+    stowClaw.whenReleased(new StopClaw());
+    slideLow.whenPressed(new UpThenBrake(SlidePosition.LOW));
+    slideMedium.whenPressed(new UpThenBrake(SlidePosition.MEDIUM));
+    slideHigh.whenPressed(new UpThenBrake(SlidePosition.HIGH));
   }
 }

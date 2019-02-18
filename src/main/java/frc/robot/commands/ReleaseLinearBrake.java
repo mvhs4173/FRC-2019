@@ -8,22 +8,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.subsystems.LinearSlide;
 import frc.robot.Hardware;
+import frc.robot.subsystems.LinearSlide;
+import frc.robot.subsystems.Timer;
 
-public class MoveLinearSlideUp extends Command {
-  private LinearSlide linearSlide;
-  double lifterSpeedRPM = 1000;
+public class ReleaseLinearBrake extends Command {
+  LinearSlide slide;
 
-  /**
-   * This command is used for manual movement of the linear slide by the driver
-   * Moves slide at a constant speed
-   */
-  public MoveLinearSlideUp() {
+  public ReleaseLinearBrake() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    this.linearSlide = Hardware.linearSlide;
-    requires(Hardware.linearSlide);
+    //requires(Hardware.linearSlide);
+    slide = Hardware.linearSlide;
   }
 
   // Called just before this Command runs the first time
@@ -34,23 +30,33 @@ public class MoveLinearSlideUp extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    linearSlide.setLifterSpeedRPM(lifterSpeedRPM);
+    if(slide.checkBrake()){
+      slide.setBreakPower(-0.3);
+      slide.setLifterSpeedRPM(1000);
+    } else if(!slide.checkBrake()) {
+      slide.stopBreak();
+      slide.setLifterSpeedRPM(0.0);
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return !slide.checkBrake();
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    slide.stopBreak();
+    slide.setLifterSpeedRPM(0);
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    slide.stopBreak();
+    slide.setLifterSpeedRPM(0);
   }
 }

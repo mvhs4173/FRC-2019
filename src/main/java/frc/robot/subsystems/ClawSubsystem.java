@@ -26,6 +26,16 @@ public class ClawSubsystem extends Subsystem {
 
   private double clawSpeed = MotorController.getPowerFromRPM(1);
 
+  private enum Direction {
+    UP,
+    DOWN;
+  }
+
+  private ClawPosition lastClawPosition;
+  private Direction lastClawDirection;
+
+
+
   public enum ClawPosition {
     CLAW_UP,
     CLAW_DOWN,
@@ -74,7 +84,34 @@ public class ClawSubsystem extends Subsystem {
    * Raises the system
    */
   public void raiseClawSystem() {
-    angleMotor.setPercentSpeed(-1);
+    ClawPosition currentPosition = getClawPosition();
+    //Figure out which direction to turn the motor to get to the top position
+    if (lastClawPosition == ClawPosition.CLAW_UP && lastClawDirection == Direction.UP && currentPosition == ClawPosition.IN_BETWEEN) {
+      angleMotor.setPercentSpeed(0.75);
+      
+      //When to set the position and direction as the "last" position/direction
+      if (currentPosition == ClawPosition.CLAW_UP || currentPosition == ClawPosition.CLAW_DOWN) {
+        lastClawPosition = currentPosition;
+        lastClawDirection = Direction.DOWN;
+      }
+    }else {
+      angleMotor.setPercentSpeed(-1);
+      
+      if (currentPosition == ClawPosition.CLAW_UP || currentPosition == ClawPosition.CLAW_DOWN) {
+        lastClawPosition = currentPosition;
+        lastClawDirection = Direction.UP;
+      }
+    }
+  }
+
+  public void raiseClawSlow() {
+    angleMotor.setPercentSpeed(-0.75);
+    lastClawDirection = Direction.UP;
+    ClawPosition clawPosition = getClawPosition();
+
+    if (clawPosition == ClawPosition.CLAW_UP || clawPosition == ClawPosition.CLAW_DOWN) {
+      lastClawPosition = clawPosition;
+    }
   }
 
   /**
@@ -114,7 +151,15 @@ public class ClawSubsystem extends Subsystem {
     }else {
       position = ClawPosition.INVALID;
     }
-
     return position;
+  }
+
+
+  public void disableUpperLimit() {
+    angleMotor.disableForwardLimitSwitch();
+  }
+
+  public void enableUpperLimit() {
+    angleMotor.enableForwardLimitSwitch();
   }
 }
