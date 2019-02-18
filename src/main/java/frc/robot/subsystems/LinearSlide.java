@@ -22,6 +22,10 @@ public class LinearSlide extends Subsystem {
   public static final int mediumPosition = 1700;
   public static final int lowPosition = 0;
 
+  public static final int hatchLowPosition = 500;
+  public static final int hatchMediumPosition = 2500;
+  public static final int hatchHighPosition = 0;
+
   public static final int allowableError = 100;
 
 
@@ -31,7 +35,7 @@ public class LinearSlide extends Subsystem {
   public LinearSlide(){
     this.lifter = Hardware.linearSlideLeftLift;
     breakMotor = Hardware.linearSlideBreak;
-    //lifter.resetEncoder();
+    lifter.resetEncoder();
   }
 
   public int getPosition() {

@@ -81,8 +81,8 @@ public class MotorController {
 	/**
 	 * Sets the feedback device to the Quadrature encoder
 	 */
-	public void configQuadEncoder() {
-		ticksPerShaftRotation = 1024;
+	public void configQuadEncoder(int ticksPerRevolution) {
+		ticksPerShaftRotation = ticksPerRevolution;
 		controller.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder,  0,  standardTimeoutMs);
 	}
 	

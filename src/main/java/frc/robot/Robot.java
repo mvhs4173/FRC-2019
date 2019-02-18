@@ -133,6 +133,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("QuadPinState", Hardware.linearSlide.getQuadPinState());
     SmartDashboard.putNumber("Linearslide Position", Hardware.linearSlide.getPosition());
     SmartDashboard.putNumber("Linearslide Amperage", Hardware.linearSlide.getAmpUsage());
+
   }
 
   @Override
@@ -163,6 +164,9 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("LinearAmprege", Hardware.linearSlide.getAmpUsage());
 
     SmartDashboard.putString("Claw Position", Hardware.claw.getClawPosition().toString());
+    SmartDashboard.putBoolean("Linear brake Triggered", Hardware.linearSlide.checkBrake());
+
+    SmartDashboard.putNumber("Gripper Position", Hardware.claw.getGripperEncoderPosition());
 
     Scheduler.getInstance().run();
   }

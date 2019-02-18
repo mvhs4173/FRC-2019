@@ -31,7 +31,7 @@ public class ReleaseLinearBrake extends Command {
   @Override
   protected void execute() {
     if(slide.checkBrake()){
-      slide.setBreakPower(-0.3);
+      slide.setBreakPower(-0.5);
       slide.setLifterSpeedRPM(1000);
     } else if(!slide.checkBrake()) {
       slide.stopBreak();

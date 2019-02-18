@@ -15,6 +15,8 @@ public class MoveLinearSlideUp extends Command {
   private LinearSlide linearSlide;
   double lifterSpeedRPM = 1000;
 
+  ReleaseLinearBrake releaseBrake;
+
   /**
    * This command is used for manual movement of the linear slide by the driver
    * Moves slide at a constant speed
@@ -24,11 +26,13 @@ public class MoveLinearSlideUp extends Command {
     // eg. requires(chassis);
     this.linearSlide = Hardware.linearSlide;
     requires(Hardware.linearSlide);
+    releaseBrake = new ReleaseLinearBrake();
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    releaseBrake.start();
   }
 
   // Called repeatedly when this Command is scheduled to run

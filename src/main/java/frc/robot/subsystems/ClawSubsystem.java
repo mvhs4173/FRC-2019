@@ -19,8 +19,6 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class ClawSubsystem extends Subsystem {
   private MotorController gripMotor;
   private MotorController angleMotor;
-  private MotorController leftIntakeMotor;
-  private MotorController rightIntakeMotor;
   private LimitSwitch clawUpLimit,
                   clawDownLimit;
 
@@ -46,10 +44,7 @@ public class ClawSubsystem extends Subsystem {
   public ClawSubsystem() {
     this.gripMotor = Hardware.clawGripMotor;
     this.angleMotor = Hardware.clawAngleMotor;
-    this.leftIntakeMotor =  Hardware.clawLeftIntake;
-    this.rightIntakeMotor = Hardware.clawRightIntake;
-    rightIntakeMotor.setFollower(leftIntakeMotor);
-    rightIntakeMotor.setDirection(InvertType.OpposeMaster);
+    gripMotor.resetEncoder();
   }
 
   @Override
@@ -57,28 +52,6 @@ public class ClawSubsystem extends Subsystem {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }
-
-  /**
-   * Stops the intake motors
-   */
-  public void stopIntake() {
-    leftIntakeMotor.setVelocityRPM(0);
-    //rightIntakeMotor.setVelocityRPM(0);
-  }
-
-  public void intakeCargo(){
-    leftIntakeMotor.setPercentSpeed(1);
-  }
-
-  public void expelCargo(){
-    leftIntakeMotor.setPercentSpeed(-1);
-  }
-
-  /*
-  public boolean cargoSwitchPressed(){
-    return cargoLimit.isTriggered();
-  }
-  */
 
   /**
    * Raises the system
@@ -161,5 +134,13 @@ public class ClawSubsystem extends Subsystem {
 
   public void enableUpperLimit() {
     angleMotor.enableForwardLimitSwitch();
+  }
+
+  public int getGripperEncoderPosition() {
+    return gripMotor.getEncoderPosition();
+  }
+
+  public void setGripperSpeed(double speed) {
+    gripMotor.setVelocityRPS(speed);
   }
 }

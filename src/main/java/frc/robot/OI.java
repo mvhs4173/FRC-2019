@@ -22,9 +22,9 @@ public class OI {
   public static Joystick joy = new Joystick(0);
 	public static Joystick launchpad = new Joystick(1);
   public Button slideUp = new JoystickButton(launchpad, 3),
-        slideDown = new JoystickButton(launchpad, 4),
+        closeGripper = new JoystickButton(launchpad, 4),
         intakeCargo = new JoystickButton(launchpad, 1),
-        expelCargo = new JoystickButton(launchpad, 2),
+        expelCargo = new JoystickButton(joy, 1),
         angleCollectorDown = new JoystickButton(launchpad, 10),
         angleCollectorUp = new JoystickButton(launchpad, 15),
         releseHatch = new JoystickButton(joy, 7),
@@ -63,7 +63,8 @@ public class OI {
   // until it is finished as determined by it's isFinished method.
   // button.whenReleased(new ExampleCommand());
     slideUp.whenPressed(new MoveLinearSlideUp());
-    slideDown.whenPressed(new MoveLinearSlideDown());
+    closeGripper.whenPressed(new GripHatch());
+    closeGripper.whenReleased(new StopGrabber());
     intakeCargo.whenPressed(new IntakeCargo());
     expelCargo.whenPressed(new ExpelCargo());
     angleCollectorDown.whenPressed(new MoveClawDown());
@@ -73,7 +74,6 @@ public class OI {
     intakeCargo.whenReleased(new StopIntake());
     expelCargo.whenReleased(new StopIntake());
     slideUp.whenReleased(new StopLinearSlide());
-    slideDown.whenReleased(new StopLinearSlide());
     stowClaw.whenPressed(new MoveClawUpNoLimit());
     stowClaw.whenReleased(new StopClaw());
     slideLow.whenPressed(new UpThenBrake(SlidePosition.LOW));

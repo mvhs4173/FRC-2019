@@ -9,15 +9,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Hardware;
-import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.IntakeSystem;;
 
 public class StopIntake extends Command {
-  ClawSubsystem claw;
+  IntakeSystem intake;
   public StopIntake() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Hardware.claw);
-    claw = Hardware.claw;
+    requires(Hardware.intake);
+    intake = Hardware.intake;
   }
 
   // Called just before this Command runs the first time
@@ -28,7 +28,7 @@ public class StopIntake extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    claw.stopIntake();
+    intake.stopIntake();
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -40,13 +40,13 @@ public class StopIntake extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    claw.stopIntake();
+    intake.stopIntake();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    claw.stopIntake();
+    intake.stopIntake();
   }
 }

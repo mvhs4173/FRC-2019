@@ -11,45 +11,52 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Hardware;
 import frc.robot.Robot;
 import frc.robot.subsystems.ClawSubsystem;
-import frc.robot.subsystems.IntakeSystem;
 
-public class IntakeCargo extends Command {
-  IntakeSystem intake;
-  public IntakeCargo() {
+public class StopGrabber extends Command {
+  private ClawSubsystem claw;
+  boolean isDone = false;
+
+  int closeGripperPosition = -100;
+  int targetPosition = 10;
+  int allowableError = 15;
+
+  double pFactor = 0.01;
+
+  public StopGrabber() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Hardware.intake);
-    intake = Hardware.intake;
+    requires(Hardware.claw);
+    this.claw = Hardware.claw;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    intake.intakeCargo();
+    claw.setGripperSpeed(0);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
+    claw.setGripperSpeed(0.0);
     return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    intake.stopIntake();
+    claw.setGripperSpeed(0.0);
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    intake.stopIntake();
+    claw.setGripperSpeed(0.0);
   }
 }
