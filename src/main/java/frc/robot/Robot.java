@@ -157,7 +157,7 @@ public class Robot extends TimedRobot {
     double y = joystick.getY();
 
     driveTrain.setReverseMode(false);
-    driveTrain.driveWithJoystick(x, y*0.3, throttle);
+    driveTrain.driveWithJoystick(x, y, throttle);
 
     SmartDashboard.putNumber("Linearslide Position", Hardware.linearSlide.getPosition());
     SmartDashboard.putBoolean("BreakLimitStatus", Hardware.linearSlide.checkBrake());
@@ -167,7 +167,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("Linear brake Triggered", Hardware.linearSlide.checkBrake());
 
     SmartDashboard.putNumber("Gripper Position", Hardware.claw.getGripperEncoderPosition());
-
+    SmartDashboard.putBoolean("CargoSwitch", Hardware.intake.cargoSwitchPressed());
     Scheduler.getInstance().run();
   }
 

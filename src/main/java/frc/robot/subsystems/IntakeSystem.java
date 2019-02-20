@@ -40,7 +40,7 @@ public class IntakeSystem extends Subsystem {
 
   
   public boolean cargoSwitchPressed(){
-    return leftIntakeMotor.getForwardLimitSwitchTriggered();
+    return leftIntakeMotor.getReverseLimitSwitchTriggered();
   }
   
 }

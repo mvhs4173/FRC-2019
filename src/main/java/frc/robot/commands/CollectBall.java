@@ -8,23 +8,18 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.robot.OI;
 import frc.robot.subsystems.LinearSlide.SlidePosition;
 
-public class UpThenBrake extends CommandGroup {
+public class CollectBall extends CommandGroup {
   /**
    * Add your docs here.
    */
-  public UpThenBrake(SlidePosition slidePosition) {
-    if (!OI.switchToHatch.get() && (slidePosition == SlidePosition.HIGH || slidePosition == SlidePosition.MEDIUM)) {
-      addParallel(new MoveClawUp());
-    }
-    if (slidePosition == SlidePosition.INTAKE){
-      addParallel(new MoveClawDown());
-    }
-
-    addSequential(new ReleaseLinearBrake());
-    addSequential(new MoveLinearSlideToPosition(slidePosition));
+  public CollectBall() {
+    addParallel(new IntakeCargo());
+    addSequential(new UpThenBrake(SlidePosition.LOW));
+    addSequential(new MoveClawUp());
+    
+    
     // Add Commands here:
     // e.g. addSequential(new Command1());
     // addSequential(new Command2());

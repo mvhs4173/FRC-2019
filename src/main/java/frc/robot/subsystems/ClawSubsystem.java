@@ -7,11 +7,14 @@
 
 package frc.robot.subsystems;
 
+import javax.swing.text.StyleContext.SmallAttributeSet;
+
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import frc.robot.*;
 
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
@@ -107,17 +110,18 @@ public class ClawSubsystem extends Subsystem {
    */
   public ClawPosition getClawPosition() {
     ClawPosition position = ClawPosition.IN_BETWEEN;
-
+    SmartDashboard.putBoolean("ReverseTriggered", angleMotor.getReverseLimitSwitchTriggered());
+    SmartDashboard.putBoolean("ForwardTriggered", angleMotor.getForwardLimitSwitchTriggered());
     //When the top limit switch is enabled
     if (angleMotor.getForwardLimitSwitchTriggered()) {
       position = ClawPosition.CLAW_UP;
     
     //When the bottom limit switch is triggered
-    }else if(angleMotor.getRevereseLimitSwitchTriggered()) {
+    }else if(angleMotor.getReverseLimitSwitchTriggered()) {
       position = ClawPosition.CLAW_DOWN;
 
     //If neither limit switch is triggered then it is in between the max and minumum height
-    }else if(!angleMotor.getForwardLimitSwitchTriggered() && !angleMotor.getRevereseLimitSwitchTriggered()){
+    }else if(!angleMotor.getForwardLimitSwitchTriggered() && !angleMotor.getReverseLimitSwitchTriggered()){
       position = ClawPosition.IN_BETWEEN;
 
     //If both switches are triggered then there is something wrong, this is an invalid position

@@ -117,7 +117,23 @@ public class DriveTrain extends Subsystem {
 	 */
 	
 	public void driveWithJoystick(double x, double y, double throttle) {		
+		boolean xNegative = x < 0;
+		boolean yNegative = y < 0;
+
+		double normalAccel = 0.05;//Max acceration 
+		double brakingAccel = 0.05;//Max acceleratin when going opposite direction suddenly
+
+		x = Math.pow(x, 2);
+		y = Math.pow(y, 2);
 		
+		if (xNegative && x > 0) {
+			x = -x;
+		}
+
+		if (yNegative && y > 0) {
+			y = -y;
+		}
+
 		//If the system is in reverse mode
 		if (inReverseMode) {
 			//Reverse the inputs
@@ -126,13 +142,10 @@ public class DriveTrain extends Subsystem {
 		double T=(throttle - 1)/-2;
 		double X=(x*T);
 		double Y=y;
-		double V=(100-Math.abs(X))*(Y/100)+Y;
-		double W=(100-Math.abs(Y))*(X/100)+X;
+		double V=(1-Math.abs(X))*(Y/1)+Y;
+		double W=(1-Math.abs(Y))*(X/1)+X;
 		double L=(V-W)/2;
 		double R=(V+W)/2;
-		
-		L = L*20;
-		R = R*20;
 		
 		boolean leftSpeedNegative = L < 0;
 		boolean rightSpeedNegative = R < 0;
@@ -148,11 +161,55 @@ public class DriveTrain extends Subsystem {
 			R = -R;
 		}
 		
-		leftUnit.setVelocityFPS(-L);//The 30 increases speed
-		rightUnit.setVelocityFPS(-R);
+		//Limit acceleration
+		double leftPower = leftUnit.getVoltage();
+		double rightPower = rightUnit.getVoltage();
+
+		boolean lNegative = L < 0;
+		boolean rNegative = R < 0;
+
+		double leftMaxAccel = normalAccel;
+		double rightMaxAccel = normalAccel;
+
+		//Determine which acceleration to use for left motor
+		if ((leftPower > 0 && -L < 0) || (-L > 0 && leftPower < 0)) {
+			leftMaxAccel = brakingAccel;
+		}
+
+		//Determine which acceleration to use for right motor
+		if ((rightPower > 0 && -R < 0) || (-R > 0 && rightPower < 0)) {
+			rightMaxAccel = brakingAccel;
+		}
+
+		SmartDashboard.putNumber("L", L);
+		SmartDashboard.putNumber("R", R);
+
+		SmartDashboard.putNumber("Right Maximum Acceleration", leftPower);
+		SmartDashboard.putNumber("Left Maximum Acceleration", rightPower);
+
+		if (Math.abs(leftPower + leftMaxAccel) < Math.abs(L)) {
+			L = Math.abs(leftPower + leftMaxAccel);
+
+			if (lNegative) {
+				L = -L;
+			}
+		}
+
+		if (Math.abs(rightPower + rightMaxAccel) < Math.abs(R)) {
+			R = Math.abs(rightPower + rightMaxAccel);
+
+			if (rNegative) {
+				R = -R;
+			}
+		}
+
+		leftUnit.setPercentSpeed(-L);//The 30 increases speed
+		rightUnit.setPercentSpeed(-R);
+
 		
-		SmartDashboard.putNumber("Requested Left Speed",  L*20);
-		SmartDashboard.putNumber("Requested Right Speed",  R*20);
+		
+		SmartDashboard.putNumber("Requested Left Speed",  L);
+		SmartDashboard.putNumber("Requested Right Speed",  R);
 	}
 	
 	public void driveUnitAtPercentSpeed(double speed) {

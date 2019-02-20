@@ -10,9 +10,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.commands.*;
-import frc.robot.commands.MoveLinearSlideToPosition.SlidePosition;
+import frc.robot.subsystems.LinearSlide.SlidePosition;
 import frc.robot.*;
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -21,19 +20,20 @@ import frc.robot.*;
 public class OI {
   public static Joystick joy = new Joystick(0);
 	public static Joystick launchpad = new Joystick(1);
-  public Button slideUp = new JoystickButton(launchpad, 3),
+  public static Button slideUp = new JoystickButton(launchpad, 3),
         closeGripper = new JoystickButton(launchpad, 4),
         intakeCargo = new JoystickButton(launchpad, 1),
-        expelCargo = new JoystickButton(joy, 1),
+        expelCargo = new JoystickButton(launchpad, 2),
         angleCollectorDown = new JoystickButton(launchpad, 10),
         angleCollectorUp = new JoystickButton(launchpad, 15),
-        releseHatch = new JoystickButton(joy, 7),
-        gripHatch = new JoystickButton(joy, 8),
+        resetEncoder = new JoystickButton(joy, 7),
         button12 = new JoystickButton(joy,12),
         stowClaw = new JoystickButton(launchpad, 11),
         slideLow = new JoystickButton(launchpad, 6),
         slideMedium = new JoystickButton(launchpad, 7),
-        slideHigh = new JoystickButton(launchpad, 9);
+        slideHigh = new JoystickButton(launchpad, 9),
+        switchToHatch = new JoystickButton(launchpad, 13),
+        intake = new JoystickButton(launchpad, 5);
   public OI (){
   //// CREATING BUTTONS
   // One type of button is a joystick button which is any button on a
@@ -65,13 +65,11 @@ public class OI {
     slideUp.whenPressed(new MoveLinearSlideUp());
     closeGripper.whenPressed(new GripHatch());
     closeGripper.whenReleased(new StopGrabber());
-    intakeCargo.whenPressed(new IntakeCargo());
+    intakeCargo.whenPressed(new CollectBall());
     expelCargo.whenPressed(new ExpelCargo());
     angleCollectorDown.whenPressed(new MoveClawDown());
     angleCollectorUp.whenPressed(new MoveClawUp());
-    releseHatch.whenPressed(new ReleseHatch());
-    gripHatch.whenPressed(new GripHatch());
-    intakeCargo.whenReleased(new StopIntake());
+    //intakeCargo.whenReleased(new StopIntake());
     expelCargo.whenReleased(new StopIntake());
     slideUp.whenReleased(new StopLinearSlide());
     stowClaw.whenPressed(new MoveClawUpNoLimit());
@@ -79,5 +77,9 @@ public class OI {
     slideLow.whenPressed(new UpThenBrake(SlidePosition.LOW));
     slideMedium.whenPressed(new UpThenBrake(SlidePosition.MEDIUM));
     slideHigh.whenPressed(new UpThenBrake(SlidePosition.HIGH));
+    switchToHatch.whenPressed(new UpThenBrake(SlidePosition.CONVERT));
+    switchToHatch.whenReleased(new UpThenBrake(SlidePosition.CONVERT));
+    intake.whenPressed(new UpThenBrake(SlidePosition.INTAKE));
+    resetEncoder.whenPressed(new ResetLinearEncoder());
   }
 }

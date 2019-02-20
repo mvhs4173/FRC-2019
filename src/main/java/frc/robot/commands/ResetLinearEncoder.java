@@ -9,47 +9,41 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Hardware;
-import frc.robot.Robot;
-import frc.robot.subsystems.ClawSubsystem;
-import frc.robot.subsystems.IntakeSystem;
+import frc.robot.subsystems.LinearSlide;
 
-public class IntakeCargo extends Command {
-  IntakeSystem intake;
-  public IntakeCargo() {
+public class ResetLinearEncoder extends Command {
+  LinearSlide linearSlide;
+  public ResetLinearEncoder() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Hardware.intake);
-    intake = Hardware.intake;
+    linearSlide = Hardware.linearSlide;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    intake.intakeCargo();
+    linearSlide.resetSlidePosition();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return intake.cargoSwitchPressed();
+    return true;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    intake.stopIntake();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-    intake.stopIntake();
   }
 }

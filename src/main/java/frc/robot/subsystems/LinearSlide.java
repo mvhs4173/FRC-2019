@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Hardware;
+import frc.robot.OI;
 
 /**
  * Add your docs here.
@@ -18,15 +19,24 @@ public class LinearSlide extends Subsystem {
   // Put methods for controlling this subsystem
   // here. Call these from Commands.
 
-  public static final int highPosition = 3800;
-  public static final int mediumPosition = 1700;
-  public static final int lowPosition = 0;
+  public enum SlidePosition {
+    LOW,
+    MEDIUM,
+    HIGH,
+    CONVERT,
+    INTAKE;
+  }
 
+  public static final int highPosition = 3800;
+  public static final int mediumPosition = 2000;
+  public static final int lowPosition = 0;
+  public static final int intakePosition = 500;
   public static final int hatchLowPosition = 500;
   public static final int hatchMediumPosition = 2500;
-  public static final int hatchHighPosition = 0;
+  public static final int hatchHighPosition = 3800;
 
   public static final int allowableError = 100;
+
 
 
   private MotorController lifter,
@@ -44,6 +54,21 @@ public class LinearSlide extends Subsystem {
 
   public boolean getQuadPinState() {
     return lifter.getQuadAState();
+  }
+
+  /**
+   * Gets the position of the slide as an enum
+   */
+  public SlidePosition getSlidePosition() {
+    SlidePosition position = SlidePosition.LOW;
+    
+    if (OI.slideMedium.get()) {
+      position = SlidePosition.MEDIUM;
+    }else if (OI.slideHigh.get()) {
+      position = SlidePosition.HIGH;
+    }
+
+    return position;
   }
 
   /**

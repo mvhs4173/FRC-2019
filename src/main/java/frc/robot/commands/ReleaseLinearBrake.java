@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Hardware;
 import frc.robot.subsystems.LinearSlide;
 import frc.robot.subsystems.Timer;
@@ -31,8 +32,9 @@ public class ReleaseLinearBrake extends Command {
   @Override
   protected void execute() {
     if(slide.checkBrake()){
-      slide.setBreakPower(-0.5);
+      slide.setBreakPower(-0.8);
       slide.setLifterSpeedRPM(1000);
+      SmartDashboard.putBoolean("Brake Triggered", slide.checkBrake());
     } else if(!slide.checkBrake()) {
       slide.stopBreak();
       slide.setLifterSpeedRPM(0.0);

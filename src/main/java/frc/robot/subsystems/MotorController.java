@@ -287,7 +287,7 @@ public class MotorController {
 	 * Gets the state of the reverse limit switch connected to the Motor Controller
 	 * @return A boolean, true if the reverse switch has been triggered
 	 */
-	public boolean getRevereseLimitSwitchTriggered() {
+	public boolean getReverseLimitSwitchTriggered() {
 		return controller.getSensorCollection().isRevLimitSwitchClosed();
 	}
 

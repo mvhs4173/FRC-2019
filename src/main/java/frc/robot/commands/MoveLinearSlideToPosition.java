@@ -7,11 +7,15 @@
 
 package frc.robot.commands;
 
+import javax.sound.sampled.Line;
+
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.LinearSlide;
 import frc.robot.Hardware;
+import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.subsystems.LinearSlide.SlidePosition;
 
 public class MoveLinearSlideToPosition extends Command {
   private LinearSlide linearSlide;
@@ -23,6 +27,7 @@ public class MoveLinearSlideToPosition extends Command {
   private int highPosition = LinearSlide.highPosition;
   private int mediumPosition = LinearSlide.mediumPosition;
   public  int lowPosition = LinearSlide.lowPosition;
+  private int intakePosition = LinearSlide.intakePosition;
 
   public static final int allowableError = LinearSlide.allowableError;//The number of ticks that the slide can be off by while still having the target being considered reached
 
@@ -33,38 +38,21 @@ public class MoveLinearSlideToPosition extends Command {
   private SlidePosition targetSlidePosition;
   private int targetSlidePositionTicks;
 
-  public enum SlidePosition {
-    LOW,
-    MEDIUM,
-    HIGH;
-  }
+  SlidePosition startPosition;
+  
 
   /**
    * Moves the slide to the specified position, can move to any of the levels on the rocket
    */
   public MoveLinearSlideToPosition(SlidePosition slidePosition) {
+    startPosition = slidePosition;
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Hardware.linearSlide);
-    this.linearSlide = Hardware.linearSlide;
+    linearSlide = Hardware.linearSlide;
 
-    this.targetSlidePosition = slidePosition;
+    targetSlidePosition = slidePosition;
     activateBrake = new BrakeLinearSlide();
-
-    //Determine the target position in ticks
-    switch(this.targetSlidePosition) {
-      case LOW:
-        targetSlidePositionTicks = lowPosition;
-        break;
-      case MEDIUM:
-        targetSlidePositionTicks = mediumPosition;
-        break;
-      case HIGH:
-        targetSlidePositionTicks = highPosition;
-        break;
-    }
-
-    SmartDashboard.putNumber("TargetPosition", targetSlidePositionTicks);
   }
 
   // Called just before this Command runs the first time
@@ -72,11 +60,41 @@ public class MoveLinearSlideToPosition extends Command {
   protected void initialize() {
     activateBraking = false;
     isDone = false;
+    
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+      if (startPosition == SlidePosition.CONVERT) {
+        targetSlidePosition = linearSlide.getSlidePosition();
+      }
+  
+      //If the switch to hatch button is triggered then change the positions
+      if (OI.switchToHatch.get()) {
+        lowPosition = LinearSlide.hatchLowPosition;
+        mediumPosition = LinearSlide.hatchMediumPosition;
+        highPosition = LinearSlide.hatchHighPosition;
+      } else {
+        lowPosition = LinearSlide.lowPosition;
+        mediumPosition = LinearSlide.mediumPosition;
+        highPosition = LinearSlide.highPosition;
+      }
+  
+      //Determine the target position in ticks
+      if (targetSlidePosition == SlidePosition.LOW) {
+        targetSlidePositionTicks = lowPosition;
+      }else if(targetSlidePosition == SlidePosition.INTAKE){
+        targetSlidePositionTicks = intakePosition;
+      } else if(targetSlidePosition == SlidePosition.MEDIUM) {
+        targetSlidePositionTicks = mediumPosition;
+      }else if (targetSlidePosition == SlidePosition.HIGH) {
+        targetSlidePositionTicks = highPosition;
+      }
+
+      SmartDashboard.putString("Slide Position", targetSlidePosition.toString());
+      SmartDashboard.putNumber("TargetPosition", targetSlidePositionTicks);
+
     pFactor = Robot.prefs.getDouble("Linearslide pFactor", 0.01);//For tuning the pFactor
 
     int currentPosition = linearSlide.getPosition();//The current position of the linearSlide in ticks
