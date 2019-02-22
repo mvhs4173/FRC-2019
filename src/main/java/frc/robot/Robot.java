@@ -168,6 +168,9 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("Gripper Position", Hardware.claw.getGripperEncoderPosition());
     SmartDashboard.putBoolean("CargoSwitch", Hardware.intake.cargoSwitchPressed());
+
+    SmartDashboard.putBoolean("ReverseLimAngle", Hardware.clawAngleMotor.getReverseLimitSwitchTriggered());
+
     Scheduler.getInstance().run();
   }
 
