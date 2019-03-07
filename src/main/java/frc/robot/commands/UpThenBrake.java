@@ -9,20 +9,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import frc.robot.OI;
+import frc.robot.Robot;
 import frc.robot.subsystems.LinearSlide.SlidePosition;
 
 public class UpThenBrake extends CommandGroup {
+  boolean hatchSwitchState = Robot.switchToHatch;
   /**
    * Add your docs here.
    */
   public UpThenBrake(SlidePosition slidePosition) {
-    if (!OI.switchToHatch.get() && (slidePosition == SlidePosition.HIGH || slidePosition == SlidePosition.MEDIUM)) {
-      addParallel(new MoveClawUp());
-    }
-    if (slidePosition == SlidePosition.INTAKE){
-      addParallel(new MoveClawDown());
-    }
-
     addSequential(new ReleaseLinearBrake());
     addSequential(new MoveLinearSlideToPosition(slidePosition));
     // Add Commands here:

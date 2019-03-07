@@ -30,7 +30,7 @@ public class RobotMap {
   public static int clawGripMotor = 7;
   public static int clawAngleMotor = 8;
   public static int clawLeftIntake = 6;
-  public static int clawRightIntake = 5;
+  public static int clawRightIntake = 42;
 
   public static int clawUpLimitChannel = 2;
   public static int clawDownLimitChannel = 3;

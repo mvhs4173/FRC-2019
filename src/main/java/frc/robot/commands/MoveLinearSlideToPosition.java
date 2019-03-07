@@ -40,6 +40,8 @@ public class MoveLinearSlideToPosition extends Command {
 
   SlidePosition startPosition;
   
+  MoveClawUp clawUp;
+  MoveClawDown clawDown;
 
   /**
    * Moves the slide to the specified position, can move to any of the levels on the rocket
@@ -53,6 +55,9 @@ public class MoveLinearSlideToPosition extends Command {
 
     targetSlidePosition = slidePosition;
     activateBrake = new BrakeLinearSlide();
+
+    clawUp = new MoveClawUp();
+    clawDown = new MoveClawDown();
   }
 
   // Called just before this Command runs the first time
@@ -66,12 +71,29 @@ public class MoveLinearSlideToPosition extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+    boolean hatchSwitchState = OI.switchToHatch.get();
+
+    //Check if the claw needs to be moved up
+    if (!hatchSwitchState && (targetSlidePosition == SlidePosition.HIGH || targetSlidePosition == SlidePosition.MEDIUM)) {
+      //Make sure the command isn't currently running
+      if (clawUp.isRunning() == false) {
+        clawUp.start();
+      }
+    }
+    if (targetSlidePosition == SlidePosition.INTAKE){
+      //Make sure the command isn't running
+      if (clawDown.isRunning() == false) {
+        clawDown.start();
+      }
+    }
+
+
       if (startPosition == SlidePosition.CONVERT) {
         targetSlidePosition = linearSlide.getSlidePosition();
       }
   
       //If the switch to hatch button is triggered then change the positions
-      if (OI.switchToHatch.get()) {
+      if (hatchSwitchState) {
         lowPosition = LinearSlide.hatchLowPosition;
         mediumPosition = LinearSlide.hatchMediumPosition;
         highPosition = LinearSlide.hatchHighPosition;
@@ -95,7 +117,7 @@ public class MoveLinearSlideToPosition extends Command {
       SmartDashboard.putString("Slide Position", targetSlidePosition.toString());
       SmartDashboard.putNumber("TargetPosition", targetSlidePositionTicks);
 
-    pFactor = Robot.prefs.getDouble("Linearslide pFactor", 0.01);//For tuning the pFactor
+    //pFactor = Robot.prefs.getDouble("Linearslide pFactor", 0.01);//For tuning the pFactor
 
     int currentPosition = linearSlide.getPosition();//The current position of the linearSlide in ticks
 
@@ -103,7 +125,7 @@ public class MoveLinearSlideToPosition extends Command {
     //Calculate new motor speed to reach target
     double newSpeed = error * pFactor;
     boolean speedIsNegative = newSpeed < 0;
-    newSpeed = Math.max(Math.sqrt(Math.abs(newSpeed)), 900);
+    newSpeed = Math.max(Math.sqrt(Math.abs(newSpeed)), 1500);
 
     if (speedIsNegative && newSpeed != 900) {
       newSpeed = -newSpeed;

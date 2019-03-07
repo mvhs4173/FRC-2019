@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.MotorController;
 import frc.robot.subsystems.UltrasonicSensor;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.DriveUnit.UnitSide;
 import frc.robot.subsystems.DriveUnit;
 import frc.robot.subsystems.IntakeSystem;
@@ -41,6 +42,8 @@ public class Hardware {
                         clawDownLimitSwitch;
 
     public static IntakeSystem intake;
+
+    public static Vision vision;
 
     //Init all the hardware
     public Hardware() {
@@ -85,5 +88,7 @@ public class Hardware {
         intake = new IntakeSystem();
 
         claw = new ClawSubsystem();
+
+        vision = new Vision();
     }
 }

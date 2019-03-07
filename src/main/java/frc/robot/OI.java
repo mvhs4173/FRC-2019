@@ -12,13 +12,14 @@ import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.LinearSlide.SlidePosition;
+import frc.robot.subsystems.SmoothedJoystick;
 import frc.robot.*;
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-  public static Joystick joy = new Joystick(0);
+  public static SmoothedJoystick joy = new SmoothedJoystick(0,true,-2,2,-0.02,0.02,-2,2);
 	public static Joystick launchpad = new Joystick(1);
   public static Button slideUp = new JoystickButton(launchpad, 3),
         closeGripper = new JoystickButton(launchpad, 4),

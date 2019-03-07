@@ -11,8 +11,7 @@ import frc.robot.OI;
 import frc.robot.*;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.Preferences;
-import edu.wpi.first.wpilibj.Joystick;
+
 /**
  *
  */
@@ -117,6 +116,7 @@ public class DriveTrain extends Subsystem {
 	 */
 	
 	public void driveWithJoystick(double x, double y, double throttle) {		
+		/*
 		boolean xNegative = x < 0;
 		boolean yNegative = y < 0;
 
@@ -139,6 +139,7 @@ public class DriveTrain extends Subsystem {
 			//Reverse the inputs
 			y = -y;
 		}
+		*/
 		double T=(throttle - 1)/-2;
 		double X=(x*T);
 		double Y=y;
@@ -146,7 +147,7 @@ public class DriveTrain extends Subsystem {
 		double W=(1-Math.abs(Y))*(X/1)+X;
 		double L=(V-W)/2;
 		double R=(V+W)/2;
-		
+		/*
 		boolean leftSpeedNegative = L < 0;
 		boolean rightSpeedNegative = R < 0;
 		
@@ -202,7 +203,7 @@ public class DriveTrain extends Subsystem {
 				R = -R;
 			}
 		}
-
+		*/
 		leftUnit.setPercentSpeed(-L);//The 30 increases speed
 		rightUnit.setPercentSpeed(-R);
 

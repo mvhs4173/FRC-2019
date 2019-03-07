@@ -18,6 +18,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ReleaseLinearBrake;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.SmoothedJoystick;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -28,11 +29,13 @@ import frc.robot.subsystems.ExampleSubsystem;
  */
 public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
+  public static boolean switchToHatch;
   public static OI oi;
   public static Hardware hardware;
-  public static Joystick joystick;
+  public static SmoothedJoystick joystick;
   public static DriveTrain driveTrain;
   public static Preferences prefs;
+  
 
   ReleaseLinearBrake releaseBrake; 
 
@@ -46,6 +49,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     hardware = new Hardware();//Init all the robot hardware
+    switchToHatch = oi.switchToHatch.get();
     oi = new OI();
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
@@ -119,6 +123,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+    double throttle = joystick.getThrottle();
+    double x = joystick.getXValue();
+    double y = joystick.getYValue();
+
+    driveTrain.setReverseMode(false);
+    driveTrain.driveWithJoystick(x, y, throttle);
+    
     Scheduler.getInstance().run();
 
     //Put the HSV threshold values on the smart dashboard so that the vision system can retrieve them
@@ -133,6 +144,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putBoolean("QuadPinState", Hardware.linearSlide.getQuadPinState());
     SmartDashboard.putNumber("Linearslide Position", Hardware.linearSlide.getPosition());
     SmartDashboard.putNumber("Linearslide Amperage", Hardware.linearSlide.getAmpUsage());
+
 
   }
 
@@ -153,13 +165,22 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     double throttle = joystick.getThrottle();
-    double x = joystick.getX();
-    double y = joystick.getY();
+    double x = joystick.getXValue();
+    double y = joystick.getYValue();
+
+    switchToHatch = OI.switchToHatch.get();
 
     driveTrain.setReverseMode(false);
     driveTrain.driveWithJoystick(x, y, throttle);
+    
+    SmartDashboard.putBoolean("swith for hatch", OI.switchToHatch.get());
+    
+    SmartDashboard.putNumber("getYV", OI.joy.getYValue());
+    SmartDashboard.putNumber("getXV", OI.joy.getXValue());
+    SmartDashboard.putNumber("getY", OI.joy.getY());
+    SmartDashboard.putNumber("getX", OI.joy.getX());
 
-    SmartDashboard.putNumber("Linearslide Position", Hardware.linearSlide.getPosition());
+    SmartDashboard.putNumber("Linearslide  Position", Hardware.linearSlide.getPosition());
     SmartDashboard.putBoolean("BreakLimitStatus", Hardware.linearSlide.checkBrake());
     SmartDashboard.putNumber("LinearAmprege", Hardware.linearSlide.getAmpUsage());
 
@@ -179,6 +200,12 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    
+    /*
+    if(OI.switchToHatch.get()){
+      Hardware.clawRightIntake.setPercentSpeed(1);
+    } else {
+      Hardware.clawRightIntake.setPercentSpeed(-1);
+    }
+    */
   }
 }
