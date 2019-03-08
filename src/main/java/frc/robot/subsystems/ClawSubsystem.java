@@ -90,6 +90,16 @@ public class ClawSubsystem extends Subsystem {
     }
   }
 
+  public void lowerClawSlow() {
+    angleMotor.setPercentSpeed(0.75);
+    lastClawDirection = Direction.DOWN;
+    ClawPosition clawPosition = getClawPosition();
+
+    if (clawPosition == ClawPosition.CLAW_UP || clawPosition == ClawPosition.CLAW_DOWN) {
+      lastClawPosition = clawPosition;
+    }
+  }
+
   /**
    * Lowers the system
    */
