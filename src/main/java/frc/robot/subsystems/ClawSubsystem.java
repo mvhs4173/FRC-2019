@@ -23,7 +23,7 @@ public class ClawSubsystem extends Subsystem {
   private MotorController gripMotor;
   private MotorController angleMotor;
   private LimitSwitch clawUpLimit,
-                  clawDownLimit;
+                      clawDownLimit;
 
   private double clawSpeed = MotorController.getPowerFromRPM(1);
 
